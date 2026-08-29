@@ -22,17 +22,18 @@
       <span style="width: 9px; height: 9px; border-radius: 999px; background: var(--color-accent); display: inline-block"></span>
     </a>
     <nav style="display: flex; gap: 28px; margin-left: 18px; font-size: 15px">
-      <a href="#rentals" class="nav-link" style="color: var(--color-text)">Rentals</a>
-      <a href="#essentials" class="nav-link" style="color: var(--color-text)">Settling in</a>
-      <a href="#neighborhoods" class="nav-link" style="color: var(--color-text)">Neighborhoods</a>
+      <a href="rentals.html" class="nav-link" style="color: var(--color-text)">Rentals</a>
+      <a href="settling-in.html" class="nav-link" style="color: var(--color-text)">Settling in</a>
+      <a href="neighborhoods.html" class="nav-link" style="color: var(--color-text)">Neighborhoods</a>
       <a href="journal.html" class="nav-link" style="color: var(--color-text)">Nathalie's journal</a>
+      <a href="about.html" class="nav-link" style="color: var(--color-text)">About</a>
     </nav>
     <div style="margin-left: auto; display: flex; align-items: center; gap: 14px">
       <div style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent)">
         <button type="button" class="lang-btn active" data-lang="en">EN</button>
         <button type="button" class="lang-btn" data-lang="fr">FR</button>
       </div>
-      <a href="#list-your-place" class="btn btn-primary" style="border-radius: 999px; padding: 10px 20px">List your place</a>
+      <a href="list-your-place.html" class="btn btn-primary" style="border-radius: 999px; padding: 10px 20px">List your place</a>
     </div>
   </header>
 
@@ -92,10 +93,10 @@
 
     <div style="position: relative; height: 520px">
       <div style="position: absolute; inset: 0; border-radius: 999px 999px 240px 240px; overflow: hidden; box-shadow: var(--shadow-lg)">
-        <div class="ph">Riviera coastline photo</div>
+        <img src="images/hero-coast.jpg" alt="French Riviera coastline near Nice" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">
       </div>
       <div style="position: absolute; bottom: -18px; left: -34px; width: 172px; height: 172px; border-radius: 999px; overflow: hidden; box-shadow: var(--shadow-lg); border: 6px solid var(--color-bg)">
-        <div class="ph ph-circle">Street or market</div>
+        <img src="images/hero-inset.jpg" alt="Old-town street on the Côte d'Azur" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">
       </div>
     </div>
   </section>
@@ -111,7 +112,7 @@
 
     <div class="rentals-grid" style="margin-top: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px">
       <article class="card elev-sm" style="border-radius: var(--radius-lg); overflow: hidden; padding: 0; display: flex; flex-direction: column">
-        <div style="height: 190px"><div class="ph">Apartment photo</div></div>
+        <div style="height: 190px"><img src="images/rental-nice.jpg" alt="Furnished apartment in Nice" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy"></div>
         <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
           <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-accent-700)">Nice · Carré d'Or</div>
           <div style="font-family: var(--font-heading); font-size: 21px; line-height: 1.15">Two rooms above the flower market</div>
@@ -124,7 +125,7 @@
       </article>
 
       <article class="card elev-sm" style="border-radius: var(--radius-lg); overflow: hidden; padding: 0; display: flex; flex-direction: column">
-        <div style="height: 190px"><div class="ph">Apartment photo</div></div>
+        <div style="height: 190px"><img src="images/rental-antibes.jpg" alt="Stone studio in Antibes" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy"></div>
         <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
           <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-accent-700)">Antibes · Vieil Antibes</div>
           <div style="font-family: var(--font-heading); font-size: 21px; line-height: 1.15">Stone studio inside the ramparts</div>
@@ -137,7 +138,7 @@
       </article>
 
       <article class="card elev-sm" style="border-radius: var(--radius-lg); overflow: hidden; padding: 0; display: flex; flex-direction: column">
-        <div style="height: 190px"><div class="ph">Apartment photo</div></div>
+        <div style="height: 190px"><img src="images/rental-villefranche.jpg" alt="Sea-view family flat in Villefranche" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy"></div>
         <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
           <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-accent-700)">Villefranche · Basse Corniche</div>
           <div style="font-family: var(--font-heading); font-size: 21px; line-height: 1.15">Family flat with a sea balcony</div>
@@ -150,7 +151,7 @@
       </article>
 
       <article class="card elev-sm" style="border-radius: var(--radius-lg); overflow: hidden; padding: 0; display: flex; flex-direction: column">
-        <div style="height: 190px"><div class="ph">Apartment photo</div></div>
+        <div style="height: 190px"><img src="images/rental-menton.jpg" alt="Garden room in a Menton villa" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy"></div>
         <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
           <div style="font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-accent-700)">Menton · Garavan</div>
           <div style="font-family: var(--font-heading); font-size: 21px; line-height: 1.15">Garden room in a lemon-tree villa</div>
@@ -220,7 +221,7 @@
         <a href="#" class="btn btn-primary" style="border-radius: 999px; margin-top: 24px; padding: 12px 24px">Take the neighborhood quiz</a>
       </div>
       <div style="height: 260px; border-radius: 200px 40px 200px 40px; overflow: hidden; box-shadow: var(--shadow-md)">
-        <div class="ph">Hill-town or harbour photo</div>
+        <img src="images/town-villefranche.jpg" alt="Riviera hill town and harbour" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">
       </div>
     </div>
   </section>
@@ -240,17 +241,17 @@
       </div>
       <div class="posts-grid" style="flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px">
         <a href="journal.html" style="color: var(--color-text)">
-          <div style="height: 150px; border-radius: var(--radius-lg); overflow: hidden"><div class="ph">Post photo</div></div>
+          <div style="height: 150px; border-radius: var(--radius-lg); overflow: hidden"><img src="images/journal-featured.jpg" alt="Market morning on the Riviera" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy"></div>
           <div style="font-size: 13px; margin-top: 12px; color: var(--color-accent-700)">26 August</div>
           <div style="font-family: var(--font-heading); font-size: 19px; line-height: 1.2; margin-top: 4px">The knife sharpener who comes to Libération market on Fridays</div>
         </a>
         <a href="journal.html" style="color: var(--color-text)">
-          <div style="height: 150px; border-radius: var(--radius-lg); overflow: hidden"><div class="ph">Post photo</div></div>
+          <div style="height: 150px; border-radius: var(--radius-lg); overflow: hidden"><img src="images/journal-1.jpg" alt="A quiet café table" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy"></div>
           <div style="font-size: 13px; margin-top: 12px; color: var(--color-accent-700)">24 August</div>
           <div style="font-family: var(--font-heading); font-size: 19px; line-height: 1.2; margin-top: 4px">Two hours of paperwork, one very kind woman at the CAF desk</div>
         </a>
         <a href="journal.html" style="color: var(--color-text)">
-          <div style="height: 150px; border-radius: var(--radius-lg); overflow: hidden"><div class="ph">Post photo</div></div>
+          <div style="height: 150px; border-radius: var(--radius-lg); overflow: hidden"><img src="images/journal-2.jpg" alt="A hidden swimming cove near Nice" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy"></div>
           <div style="font-size: 13px; margin-top: 12px; color: var(--color-accent-700)">22 August</div>
           <div style="font-family: var(--font-heading); font-size: 19px; line-height: 1.2; margin-top: 4px">Where to swim in Nice when the pebbles defeat you</div>
         </a>
