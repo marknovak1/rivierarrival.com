@@ -267,6 +267,10 @@ textarea.input { min-height: 90px; resize: vertical; }
 .essential-card:hover { background: var(--color-accent-100) !important; }
 .archive-row:hover { background: var(--color-accent-100) !important; }
 
+/* featured essentials-grid card (e.g. "I'll find your place") — spans two
+   columns so it reads as a highlighted service, not just another topic tile */
+.essential-feature { grid-column: span 2; }
+
 /* image placeholders (replaces <image-slot>) — soft washed panels with a hint label */
 .ph {
   display: flex; align-items: center; justify-content: center;
@@ -300,6 +304,7 @@ textarea.input { min-height: 90px; resize: vertical; }
 }
 @media (max-width: 560px) {
   .essentials-grid, .posts-grid { grid-template-columns: 1fr !important; }
+  .essential-feature { grid-column: span 1 !important; }
   header nav { display: none !important; }
   .site-footer { flex-direction: column !important; gap: 32px !important; }
 }
