@@ -13,8 +13,6 @@
   body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); }
   a { color: var(--color-accent-700); text-decoration: none; }
   a:hover { color: var(--color-accent-600); }
-  @media (max-width: 900px) { h1 { font-size: 44px !important; } }
-  @media (max-width: 560px) { header nav { display: none !important; } .site-footer { flex-direction: column !important; gap: 32px !important; } }
 </style>
 </head>
 <body>
@@ -38,6 +36,9 @@
         <button type="button" class="lang-btn active" data-lang="en">EN</button>
         <button type="button" class="lang-btn" data-lang="fr">FR</button>
       </div>
+      <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      </button>
     </div>
   </header>
 
@@ -87,6 +88,23 @@
       document.documentElement.setAttribute('lang', lang);
       try { localStorage.setItem('ra-lang', lang); } catch (e) {}
     }
+  })();
+</script>
+<script>
+  (function () {
+    var toggle = document.querySelector('.nav-toggle');
+    var nav = document.querySelector('header nav');
+    if (!toggle || !nav) return;
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('nav-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    nav.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        nav.classList.remove('nav-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
   })();
 </script>
 </body>

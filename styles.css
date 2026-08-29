@@ -82,7 +82,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: var(--font-headi
    ══════════════════════════════════════════════════════════════════════ */
 
 *, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; font-size: 15px; line-height: 1.55; font-weight: 400; }
+body { margin: 0; font-size: 16px; line-height: 1.55; font-weight: 400; }
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
   line-height: 1.12; letter-spacing: -0.015em; margin: 0 0 var(--space-2);
@@ -116,10 +116,10 @@ figcaption {
 /* — buttons — */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px; /* touch-target minimum (WCAG 2.5.5 / platform HIG) */
   cursor: pointer; text-decoration: none;
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
-  font-size: 14px; line-height: 1.2; color: var(--color-text); /* matches the .input's 14px —
-     the pair sits side by side in sign-up rows */
+  font-size: 14px; line-height: 1.2; color: var(--color-text);
   background: transparent; border: 1px solid transparent;
   padding: var(--space-2) calc(var(--space-3) * 1.2);
   border-radius: var(--radius-md);
@@ -135,7 +135,7 @@ figcaption {
 .btn-ghost { color: var(--color-accent); padding-inline: var(--space-1); }
 .btn-ghost:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
 .btn-ghost:active { background: color-mix(in srgb, var(--color-accent) 18%, transparent); }
-.btn-icon { width: 36px; height: 36px; padding: 0; }
+.btn-icon { width: 36px; height: 36px; min-height: 36px; padding: 0; }
 .btn-block { width: 100%; margin-top: var(--space-2); }
 
 /* — forms — */
@@ -144,8 +144,9 @@ figcaption {
   color: color-mix(in srgb, var(--color-text) 70%, transparent);
 }
 .input {
-  width: 100%; min-height: 36px; padding: 6px 10px; font: inherit;
-  font-size: 14px; color: var(--color-text); caret-color: var(--color-accent);
+  width: 100%; min-height: 44px; padding: 6px 10px; font: inherit;
+  font-size: 16px; /* 16px avoids iOS Safari's zoom-on-focus for form fields */
+  color: var(--color-text); caret-color: var(--color-accent);
   background: var(--color-surface);
   border: 1px solid var(--color-divider); border-radius: var(--radius-md);
 }
@@ -296,15 +297,42 @@ textarea.input { min-height: 90px; resize: vertical; }
   box-shadow: var(--shadow-sm);
 }
 
+/* mobile nav toggle — hidden on desktop, shown once the inline nav collapses */
+.nav-toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 44px; height: 44px; padding: 0;
+  background: transparent; border: 1px solid var(--color-divider);
+  border-radius: 999px; color: var(--color-text); cursor: pointer;
+}
+
 /* responsive: stack the big two-column grids on narrow screens */
 @media (max-width: 900px) {
   .grid-hero, .grid-2, .grid-list { grid-template-columns: 1fr !important; }
   .essentials-grid { grid-template-columns: repeat(2, 1fr) !important; }
   h1 { font-size: 44px !important; }
+
+  /* the 5-link nav + EN/FR toggle no longer fits inline below ~900px —
+     collapse it into a hamburger-triggered dropdown instead of letting it
+     overflow the header row (it has no flex-wrap) */
+  header { position: relative; }
+  .nav-toggle { display: inline-flex; }
+  header nav {
+    display: none !important;
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 2px;
+    background: var(--color-bg); padding: 8px 48px 20px;
+    box-shadow: var(--shadow-md); z-index: 30;
+  }
+  header nav.nav-open { display: flex !important; }
+  header nav a { display: block; padding: 12px 0; font-size: 16px; }
 }
 @media (max-width: 560px) {
   .essentials-grid, .posts-grid { grid-template-columns: 1fr !important; }
   .essential-feature { grid-column: span 1 !important; }
-  header nav { display: none !important; }
+  /* index.html's journal teaser uses a flex row with a fixed-basis 300px
+     sidebar (flex-shrink: 0) that won't fit a phone width — stacking the
+     flex direction turns that basis into a height, not a width, so it no
+     longer forces horizontal overflow */
+  .grid-list { flex-direction: column; }
   .site-footer { flex-direction: column !important; gap: 32px !important; }
 }
