@@ -1,5 +1,5 @@
 /* Organic — design-system tokens and component classes. This file is the source of truth for the system's look; retune it here and see readme.md. */
-@import url('https://fonts.googleapis.com/css2?family=Caprasimo:wght@400&family=Figtree:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Lora:ital,wght@0,400;0,500;0,600;0,700&display=swap');
 
 :root {
   --color-bg: #f5ead8;
@@ -41,9 +41,12 @@
   --color-accent-2-800: #3d472b;
   --color-accent-2-900: #272e1b;
 
-  --font-heading: "Caprasimo", system-ui, sans-serif;
-  --font-heading-weight: 400;
-  --font-body: "Figtree", system-ui, sans-serif;
+  /* Serif system (stakeholder font swap). Cormorant Garamond is too light/delicate
+     for 15px body copy, so body text uses Lora — a sturdier serif in the same
+     classical-revival spirit — while headings keep Cormorant Garamond's elegance. */
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-heading-weight: 600;
+  --font-body: "Lora", Georgia, serif;
 
   --space-1: 4.4px;
   --space-2: 8.8px;
@@ -291,13 +294,12 @@ textarea.input { min-height: 90px; resize: vertical; }
 
 /* responsive: stack the big two-column grids on narrow screens */
 @media (max-width: 900px) {
-  .grid-hero, .grid-2, .grid-list, .grid-host { grid-template-columns: 1fr !important; }
-  .rentals-grid, .essentials-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-hero, .grid-2, .grid-list { grid-template-columns: 1fr !important; }
+  .essentials-grid { grid-template-columns: repeat(2, 1fr) !important; }
   h1 { font-size: 44px !important; }
 }
 @media (max-width: 560px) {
-  .rentals-grid, .essentials-grid, .posts-grid { grid-template-columns: 1fr !important; }
+  .essentials-grid, .posts-grid { grid-template-columns: 1fr !important; }
   header nav { display: none !important; }
-  .search-grid { grid-template-columns: 1fr !important; }
   .site-footer { flex-direction: column !important; gap: 32px !important; }
 }

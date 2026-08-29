@@ -1,12 +1,12 @@
 # rivierarrival.com
 
-Consulting and relocation platform for the French Riviera (Côte d'Azur), guided by a local persona, **Nathalie**. Helps foreign newcomers with housing, visas, banking, healthcare, schools and settling in — plus a rentals feature for owners listing to foreign tenants.
+Consulting and relocation platform for the French Riviera (Côte d'Azur), guided by a local persona, **Nathalie**. Helps foreign newcomers with housing, visas, banking, healthcare, schools and settling in.
 
 ## Structure
 
-- `index.html` — homepage (hero, rentals, settling-in guides, neighborhoods, journal preview, "list your place")
+- `index.html` — homepage (hero, settling-in guides, neighborhoods, journal preview)
 - `journal.html` — Nathalie's journal (daily posts, archive, newsletter)
-- `styles.css` — design system tokens + components (warm cream / terracotta / sage, Caprasimo + Figtree)
+- `styles.css` — design system tokens + components (warm cream / terracotta / sage, Cormorant Garamond + Lora)
 
 Plain static HTML/CSS with a small vanilla-JS EN/FR language toggle. No build step.
 
@@ -27,5 +27,4 @@ Connected to Vercel via GitHub integration — pushes to `main` auto-deploy.
 - Swap placeholder panels for real photography
 - French translations behind the EN/FR toggle
 - Additional languages
-- Owner accounts for rentals
 - Monetization model (TBD)

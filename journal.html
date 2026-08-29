@@ -22,13 +22,17 @@
       <span style="width: 9px; height: 9px; border-radius: 999px; background: var(--color-accent); display: inline-block"></span>
     </a>
     <nav style="display: flex; gap: 28px; margin-left: 18px; font-size: 15px">
-      <a href="rentals.html" class="nav-link" style="color: var(--color-text)">Rentals</a>
       <a href="settling-in.html" class="nav-link" style="color: var(--color-text)">Settling in</a>
       <a href="neighborhoods.html" class="nav-link" style="color: var(--color-text)">Neighborhoods</a>
       <a href="journal.html" style="color: var(--color-accent-700)">Nathalie's journal</a>
       <a href="about.html" class="nav-link" style="color: var(--color-text)">About</a>
     </nav>
-    <a href="list-your-place.html" class="btn btn-primary" style="margin-left: auto; border-radius: 999px; padding: 10px 20px">List your place</a>
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 14px">
+      <div style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent)">
+        <button type="button" class="lang-btn active" data-lang="en">EN</button>
+        <button type="button" class="lang-btn" data-lang="fr">FR</button>
+      </div>
+    </div>
   </header>
 
   <section class="grid-2" style="max-width: 1320px; margin: 0 auto; padding: 34px 48px 0; display: grid; grid-template-columns: 1fr 320px; gap: 56px; align-items: center">
@@ -137,11 +141,6 @@
         <p style="font-size: 15px; line-height: 1.55; margin: 10px 0 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Stuck on something in your first weeks? Send it over — the answer usually becomes a post.</p>
         <a href="#" class="btn btn-secondary btn-block" style="border-radius: 999px">Send a question</a>
       </div>
-      <div style="background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow-sm)">
-        <div style="font-family: var(--font-heading); font-size: 19px">Looking for a place?</div>
-        <p style="font-size: 15px; line-height: 1.55; margin: 10px 0 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">312 rentals across the Côte d'Azur, listed in English.</p>
-        <a href="index.html#rentals" class="btn btn-primary btn-block" style="border-radius: 999px">Browse rentals</a>
-      </div>
     </aside>
   </section>
 
@@ -153,25 +152,37 @@
     <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 180px)); gap: 32px; font-size: 15px">
       <div style="display: flex; flex-direction: column; gap: 10px">
         <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Stay</span>
-        <a href="index.html#rentals">Rentals</a>
-        <a href="index.html#list-your-place">List your place</a>
-        <a href="index.html#neighborhoods">Neighborhoods</a>
+        <a href="neighborhoods.html">Neighborhoods</a>
       </div>
       <div style="display: flex; flex-direction: column; gap: 10px">
         <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Settle in</span>
-        <a href="index.html#essentials">Paperwork</a>
-        <a href="index.html#essentials">Health &amp; banking</a>
-        <a href="index.html#essentials">Transport</a>
+        <a href="settling-in.html">Guides</a>
+        <a href="about.html">About Nathalie</a>
+        <a href="contact.html">Contact</a>
       </div>
       <div style="display: flex; flex-direction: column; gap: 10px">
         <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Read</span>
-        <a href="journal.html">Journal</a>
-        <a href="#">Local businesses</a>
-        <a href="#">Contact</a>
+        <a href="journal.html">Nathalie's journal</a>
+        <a href="neighborhoods.html">Neighborhoods</a>
+        <a href="contact.html">Contact</a>
       </div>
     </div>
   </footer>
 </div>
 
+<script>
+  (function () {
+    var btns = document.querySelectorAll('.lang-btn');
+    var saved = null;
+    try { saved = localStorage.getItem('ra-lang'); } catch (e) {}
+    if (saved) setLang(saved);
+    btns.forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.lang); }); });
+    function setLang(lang) {
+      btns.forEach(function (b) { b.classList.toggle('active', b.dataset.lang === lang); });
+      document.documentElement.setAttribute('lang', lang);
+      try { localStorage.setItem('ra-lang', lang); } catch (e) {}
+    }
+  })();
+</script>
 </body>
 </html>
