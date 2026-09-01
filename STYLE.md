@@ -1,17 +1,18 @@
 # Riviera Arrival — style rules
 
+`styles.css` is the source of truth for tokens.
+
 Plain-language rules so a new page looks like it belongs, without re-deriving
-the look from scratch. Backed by [`design-tokens.css`](design-tokens.css) and
-[`styles.css`](styles.css).
+the look from scratch. Backed by [`styles.css`](styles.css).
 
 ## Setup
 
 Every new page:
 
 1. Copies [`_template.html`](_template.html) as its starting point.
-2. Links both stylesheets in `<head>`, in this order: `design-tokens.css`
-   then `styles.css` (the Google Fonts `@import` for Cormorant Garamond/Lora
-   lives at the top of `styles.css`, so it doesn't need repeating).
+2. Links `styles.css` in `<head>` (the Google Fonts `@import` for Cormorant
+   Garamond/Lora lives at the top of that file, so it doesn't need
+   repeating).
 
 ## Kicker tags, not a tagline
 
@@ -23,11 +24,11 @@ inventing a slogan.
 
 ## Headline voice
 
-- Headings use `--font-display` (Cormorant Garamond) — an elegant, classical
-  serif. Body copy is `--font-body` (Lora): Cormorant Garamond reads too
-  light/delicate at 15px body sizes, so Lora — a sturdier serif in the same
-  spirit — carries paragraphs. Both are serif; there is no sans-serif left
-  in the system.
+- Headings use `--font-heading` (Cormorant Garamond, paired with
+  `--font-heading-weight: 600`) — an elegant, classical serif. Body copy is
+  `--font-body` (Lora): Cormorant Garamond reads too light/delicate at 15px
+  body sizes, so Lora — a sturdier serif in the same spirit — carries
+  paragraphs. Both are serif; there is no sans-serif left in the system.
 - A stylized word or short phrase inside a headline (e.g. "French Riviera"
   in the homepage h1) can be set in italic (`<em>`) for emphasis, roman for
   the rest of the line.
@@ -38,12 +39,16 @@ inventing a slogan.
 
 ## Gradient usage
 
-`--gradient-sunset` (sage into terracotta, 135deg) is the `.ph`
-image-placeholder treatment only — it fills panels standing in for a photo
-that hasn't been shot yet. It is not a page background or a decorative
-band. Once a real photo exists, the gradient placeholder is replaced by an
-`<img>` and the gradient no longer applies to that spot. Everywhere else the
-background is the flat `--color-bg` cream.
+The `.ph` image-placeholder panel is the only gradient in the system: a
+135deg sage-into-terracotta blend built from `color-mix(in srgb,
+var(--color-accent-2) 22%, var(--color-surface))` into `color-mix(in srgb,
+var(--color-accent) 18%, var(--color-surface))`, defined inline on `.ph` in
+`styles.css` (there is no separate gradient token). It fills panels standing
+in for a photo that hasn't been shot yet. It is not a page background or a
+decorative band, and there is no "sunset" gradient used anywhere else. Once
+a real photo exists, the gradient placeholder is replaced by an `<img>` and
+the gradient no longer applies to that spot. Everywhere else the background
+is the flat `--color-bg` cream.
 
 ## Card sections
 
