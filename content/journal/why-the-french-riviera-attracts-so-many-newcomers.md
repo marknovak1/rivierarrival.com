@@ -2,7 +2,7 @@
 title: Why the French Riviera Attracts So Many Newcomers
 date: 2026-09-15
 draft: false
-category: Local businesses
+category: Moving to the Riviera
 description: The French Riviera attracts newcomers from around the world thanks
   to its year‑round sunshine, balanced Mediterranean lifestyle, strong job
   opportunities, and welcoming international community. With diverse towns,

@@ -55,12 +55,29 @@ collections:
         name: category
         widget: select
         options:
-          - Local businesses
-          - Paperwork
-          - Food & markets
-          - Walks
-          - Language
-        default: Local businesses
+          - "Moving to the Riviera"
+          - "Life as a Newcomer"
+          - "Riviera Lifestyle"
+          - "City Guides"
+          - "Work & Business"
+          - "Housing & Neighborhoods"
+          - "Culture & Community"
+          - "Food & Dining"
+          - "Events & Festivals"
+          - "Travel & Transportation"
+          - "Tips & Resources"
+          - "Local Services"
+          - "Legal & Administrative"
+          - "Cost of Living"
+          - "Family & Education"
+          - "Healthcare"
+          - "Outdoor Activities"
+          - "Beaches & Nature"
+          - "Shopping & Markets"
+          - "History & Heritage"
+          - "Nightlife"
+          - "Seasonal Living"
+        default: "Riviera Lifestyle"
       - label: Short summary
         name: description
         widget: text

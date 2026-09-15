@@ -3,7 +3,7 @@ title: Where to swim in Nice when the pebbles defeat you
 date: 2026-08-24
 updated: 2026-08-24
 draft: false
-category: Walks
+category: Outdoor Activities
 description: Four coves within a bus ride, ranked by how far you carry your towel — for the days the Promenade stones are not worth the swim.
 image: /images/journal-2.jpg
 imageAlt: A hidden swimming cove near Nice
