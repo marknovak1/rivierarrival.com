@@ -16,7 +16,7 @@ Static HTML/CSS with a small vanilla-JS EN/FR language toggle, plus a free Node 
 ```bash
 npm install
 npm run build
-python3 -m http.server 8000
+python3 -m http.server 8000 --directory public
 ```
 
 Then open `http://localhost:8000/journal/` and `http://localhost:8000/admin/`.
@@ -25,7 +25,7 @@ Then open `http://localhost:8000/journal/` and `http://localhost:8000/admin/`.
 
 Build command: `npm run build`  
 Install command: `npm install`  
-Output directory: leave empty (project root)
+Output directory: `public`
 
 Pushes to `main` auto-deploy. Journal posts published in the CMS commit Markdown to GitHub; Vercel rebuilds the HTML pages.
 

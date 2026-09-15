@@ -76,6 +76,16 @@ if (!existsSync(join(ROOT, 'journal/where-to-swim-in-nice.html'))) {
   fail('Missing swimming post page');
 }
 
+if (!existsSync(join(ROOT, 'public/journal/index.html'))) {
+  fail('public/journal/index.html missing (Vercel output directory)');
+}
+if (!existsSync(join(ROOT, 'public/admin/index.html'))) {
+  fail('public/admin/index.html missing');
+}
+if (!existsSync(join(ROOT, 'public/index.html'))) {
+  fail('public/index.html missing');
+}
+
 if (errors.length) {
   console.error(errors.map((e) => ` - ${e}`).join('\n'));
   process.exit(1);

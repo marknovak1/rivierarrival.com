@@ -1,4 +1,4 @@
-import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
@@ -489,6 +489,19 @@ function resetOutDir() {
   mkdirSync(OUT_DIR, { recursive: true });
 }
 
+function assemblePublic() {
+  const dest = join(ROOT, 'public');
+  rmSync(dest, { recursive: true, force: true });
+  mkdirSync(dest, { recursive: true });
+  const copy = ['styles.css', 'robots.txt', 'sitemap.xml', 'images', 'admin', 'journal'];
+  for (const name of readdirSync(ROOT)) {
+    if (name.endsWith('.html')) copy.push(name);
+  }
+  for (const item of copy) {
+    cpSync(join(ROOT, item), join(dest, item), { recursive: true });
+  }
+}
+
 const allPosts = loadPosts();
 const published = allPosts.filter((post) => !post.draft);
 resetOutDir();
@@ -497,5 +510,6 @@ for (const post of published) {
   writeFileSync(join(OUT_DIR, `${post.slug}.html`), renderPost(post));
 }
 writeSitemap(published);
+assemblePublic();
 
 console.log(`Journal build: ${published.length} published, ${allPosts.length - published.length} draft`);
