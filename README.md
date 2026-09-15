@@ -5,26 +5,30 @@ Consulting and relocation platform for the French Riviera (Côte d'Azur), guided
 ## Structure
 
 - `index.html` — homepage (hero, settling-in guides, neighborhoods, journal preview)
-- `journal.html` — Nathalie's journal (daily posts, archive, newsletter)
+- `journal/` — Nathalie's journal hub and posts (built from `content/journal/*.md`)
+- `admin/` — Decap CMS for writing posts (no code)
 - `styles.css` — design system tokens + components (warm cream / terracotta / sage, Cormorant Garamond + Lora)
 
-Plain static HTML/CSS with a small vanilla-JS EN/FR language toggle. No build step.
+Static HTML/CSS with a small vanilla-JS EN/FR language toggle, plus a free Node build that turns journal Markdown into HTML and updates `sitemap.xml`.
 
 ## Local preview
 
-Open `index.html` in a browser, or serve the folder:
-
 ```bash
-python3 -m http.server 8000
+npm install
+npm run build
+python3 -m http.server 8000 --directory public
 ```
 
-## Deploy
+Then open `http://localhost:8000/journal/` and `http://localhost:8000/admin/`.
 
-Connected to Vercel via GitHub integration — pushes to `main` auto-deploy.
+## Vercel
 
-## Roadmap
+Build command: `npm run build`  
+Install command: `npm install`  
+Output directory: `public`
 
-- Swap placeholder panels for real photography
-- French translations behind the EN/FR toggle
-- Additional languages
-- Monetization model (TBD)
+Pushes to `main` auto-deploy. Journal posts published in the CMS commit Markdown to GitHub; Vercel rebuilds the HTML pages.
+
+## Journal admin
+
+After the one-time GitHub OAuth App setup (see the pull request), Nathalie signs in at `/admin/` with GitHub, writes a post, unchecks **Keep as draft**, and saves. The live page appears when the Vercel deploy finishes.

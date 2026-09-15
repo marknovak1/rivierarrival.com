@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Journal admin — Riviera Arrival</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <style>
+    html, body { height: 100%; margin: 0; background: #f5ead8; }
+  </style>
+  <script>
+    (function () {
+      var origin = window.location.origin;
+      function patch(text) {
+        return String(text).replace(/https:\/\/CMS_ORIGIN/g, origin);
+      }
+      var origFetch = window.fetch;
+      window.fetch = function (input, init) {
+        var url = typeof input === 'string' ? input : (input && input.url) || '';
+        var req = origFetch.apply(this, arguments);
+        if (String(url).indexOf('config.yml') === -1) return req;
+        return req.then(function (res) {
+          return res.text().then(function (text) {
+            return new Response(patch(text), {
+              status: res.status,
+              headers: { 'Content-Type': 'text/yaml; charset=utf-8' }
+            });
+          });
+        });
+      };
+    })();
+  </script>
+</head>
+<body>
+  <script src="https://unpkg.com/decap-cms@3.6.4/dist/decap-cms.js"></script>
+  <script>
+    if (window.CMS) CMS.registerPreviewStyle('/styles.css');
+  </script>
+</body>
+</html>
