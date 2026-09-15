@@ -3,6 +3,5 @@ node_modules/
 .vercel
 *.log
 .thumbnail
-
-.vercel
 .env*
+/journal/*.html

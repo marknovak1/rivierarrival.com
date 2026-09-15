@@ -1,0 +1,80 @@
+backend:
+  name: github
+  repo: marknovak1/rivierarrival.com
+  branch: main
+  base_url: https://CMS_ORIGIN
+  auth_endpoint: api/auth
+
+site_url: https://www.rivieraarrival.com
+display_url: https://www.rivieraarrival.com
+
+media_folder: images/journal
+public_folder: /images/journal
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  - name: journal
+    label: Journal posts
+    label_singular: Journal post
+    folder: content/journal
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    preview_path: journal/{{slug}}.html
+    summary: "{{title}}"
+    sortable_fields: ["date", "title"]
+    fields:
+      - label: Title
+        name: title
+        widget: string
+        hint: This becomes the page headline and the URL name. Use a real title, not only a date.
+      - label: Date
+        name: date
+        widget: datetime
+        date_format: YYYY-MM-DD
+        time_format: false
+        format: YYYY-MM-DD
+      - label: Last updated
+        name: updated
+        widget: datetime
+        date_format: YYYY-MM-DD
+        time_format: false
+        format: YYYY-MM-DD
+        required: false
+        hint: Leave blank to use the same day as Date.
+      - label: Keep as draft
+        name: draft
+        widget: boolean
+        default: true
+        hint: On = saved but hidden from the public site. Off = publish on the next site build (about a minute after you save).
+      - label: Category
+        name: category
+        widget: select
+        options:
+          - Local businesses
+          - Paperwork
+          - Food & markets
+          - Walks
+          - Language
+        default: Local businesses
+      - label: Short summary
+        name: description
+        widget: text
+        hint: One or two sentences for the journal list and Google.
+      - label: Cover photo
+        name: image
+        widget: image
+        required: true
+      - label: Cover photo description
+        name: imageAlt
+        widget: string
+        required: false
+        hint: Describe the photo for screen readers (not shown as a caption).
+      - label: Body
+        name: body
+        widget: markdown
+        hint: Write the post here. You can add extra photos with the image button.

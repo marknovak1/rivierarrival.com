@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Journal admin — Riviera Arrival</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <style>
+    html, body { height: 100%; margin: 0; background: #f5ead8; }
+  </style>
+</head>
+<body>
+  <script>
+    window.CMS_MANUAL_INIT = true;
+  </script>
+  <script src="https://unpkg.com/js-yaml@4.1.1/dist/js-yaml.min.js"></script>
+  <script src="https://unpkg.com/decap-cms@3.6.4/dist/decap-cms.js"></script>
+  <script>
+    (function () {
+      fetch('/admin/config.yml', { cache: 'no-store' })
+        .then(function (res) {
+          if (!res.ok) throw new Error('Could not load CMS config');
+          return res.text();
+        })
+        .then(function (text) {
+          var config = jsyaml.load(text);
+          config.backend = config.backend || {};
+          config.backend.base_url = window.location.origin;
+          config.backend.auth_endpoint = 'api/auth';
+          CMS.init({ config: config });
+          CMS.registerPreviewStyle('/styles.css');
+        })
+        .catch(function (err) {
+          document.body.innerHTML =
+            '<div style="font-family:Georgia,serif;max-width:36em;margin:3em auto;padding:0 1em;line-height:1.5">' +
+            '<h1>Admin could not load</h1><p>' + String(err.message || err) + '</p></div>';
+        });
+    })();
+  </script>
+</body>
+</html>

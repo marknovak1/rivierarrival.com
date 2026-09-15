@@ -326,6 +326,25 @@ textarea.input { min-height: 90px; resize: vertical; }
   header nav.nav-open { display: flex !important; }
   header nav a { display: block; padding: 12px 0; font-size: 16px; }
 }
+/* Journal post body — markdown from Decap, same type scale as the rest of the site */
+.journal-body {
+  font-size: 18px;
+  line-height: 1.7;
+  margin-top: 32px;
+  max-width: 40em;
+}
+.journal-body p { margin: 0 0 1.1em; }
+.journal-body h2 { font-size: 28px; margin: 1.5em 0 0.5em; }
+.journal-body h3 { font-size: 22px; margin: 1.3em 0 0.45em; }
+.journal-body ul, .journal-body ol { margin: 0 0 1.1em; padding-left: 1.25em; }
+.journal-body li { margin: 0 0 0.4em; }
+.journal-body img {
+  border-radius: var(--radius-lg);
+  margin: 1.4em 0;
+  box-shadow: var(--shadow-sm);
+}
+.journal-body a { text-decoration: underline; text-underline-offset: 3px; }
+
 @media (max-width: 560px) {
   .essentials-grid, .posts-grid { grid-template-columns: 1fr !important; }
   .essential-feature { grid-column: span 1 !important; }
