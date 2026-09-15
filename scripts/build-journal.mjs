@@ -3,37 +3,14 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { marked } from 'marked';
+import { CATEGORIES, RELATED_BY_CATEGORY, canonicalCategory } from './journal-categories.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://www.rivieraarrival.com';
 const CONTENT_DIR = join(ROOT, 'content', 'journal');
 const OUT_DIR = join(ROOT, 'journal');
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
-
-const CATEGORIES = ['Local businesses', 'Paperwork', 'Food & markets', 'Walks', 'Language'];
-
-const RELATED_BY_CATEGORY = {
-  'Local businesses': [
-    { href: '/guide-businesses.html', title: 'Local businesses' },
-    { href: '/neighborhoods.html', title: 'Neighborhoods' }
-  ],
-  Paperwork: [
-    { href: '/settling-in.html', title: 'Settling in' },
-    { href: '/guide-visas.html', title: 'Visas & residency' }
-  ],
-  'Food & markets': [
-    { href: '/guide-businesses.html', title: 'Local businesses' },
-    { href: '/neighborhoods.html', title: 'Neighborhoods' }
-  ],
-  Walks: [
-    { href: '/guide-transport.html', title: 'Getting around' },
-    { href: '/neighborhoods.html', title: 'Neighborhoods' }
-  ],
-  Language: [
-    { href: '/guide-french.html', title: 'Learning French' },
-    { href: '/about.html', title: 'About Nathalie' }
-  ]
-};
+const DEFAULT_RELATED = RELATED_BY_CATEGORY['Tips & Resources'];
 
 marked.setOptions({ gfm: true, breaks: false });
 
@@ -250,7 +227,7 @@ function loadPosts() {
       date,
       updated: toIsoDate(data.updated) || date,
       draft,
-      category: CATEGORIES.includes(data.category) ? data.category : 'Local businesses',
+      category: canonicalCategory(data.category),
       description,
       image: publicImage(data.image || '/images/journal-featured.jpg'),
       imageAlt: String(data.imageAlt || data.title || 'Journal photo'),
@@ -291,7 +268,7 @@ function jsonLd(post) {
 }
 
 function relatedBlock(post) {
-  const links = RELATED_BY_CATEGORY[post.category] || RELATED_BY_CATEGORY.Paperwork;
+  const links = RELATED_BY_CATEGORY[post.category] || DEFAULT_RELATED;
   return `<aside style="margin-top: 48px; background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow-sm)">
       <div style="font-family: var(--font-heading); font-size: 21px">Related guides</div>
       <p style="font-size: 15px; line-height: 1.55; margin: 10px 0 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">If this post is the small story, these pages are the practical version.</p>

@@ -3,7 +3,7 @@ title: Two hours at the CAF desk and one very kind woman
 date: 2026-08-26
 updated: 2026-08-26
 draft: false
-category: Paperwork
+category: Legal & Administrative
 description: Bring three copies of everything. Bring a book. Bring the lease. And thank the person who is not the system, even when the system is slow.
 image: /images/journal-1.jpg
 imageAlt: A quiet café table and a stack of papers

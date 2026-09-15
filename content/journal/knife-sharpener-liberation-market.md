@@ -3,7 +3,7 @@ title: The knife sharpener who comes to Libération market on Fridays
 date: 2026-08-28
 updated: 2026-08-28
 draft: false
-category: Local businesses
+category: Local Services
 description: He sets up between the fishmonger and the olive stand at seven, works until the crowd thins, and charges four euros a blade.
 image: /images/journal-featured.jpg
 imageAlt: Market morning on the Riviera

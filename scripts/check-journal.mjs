@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { CATEGORIES, CATEGORY_ALIASES, canonicalCategory } from './journal-categories.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
@@ -63,6 +64,33 @@ if (sitemap) {
 
 if (admin && !admin.includes('decap-cms')) fail('Admin page does not load Decap CMS');
 if (config && !config.includes('folder: content/journal')) fail('CMS config is missing the journal collection');
+if (CATEGORIES.length !== 22) fail(`Expected 22 journal categories, found ${CATEGORIES.length}`);
+if (config) {
+  for (const label of CATEGORIES) {
+    if (!config.includes(label)) fail(`CMS config is missing category "${label}"`);
+  }
+  if (config.includes('Local businesses') || config.includes('Food & markets')) {
+    fail('CMS config still lists an old category option');
+  }
+}
+if (canonicalCategory('Paperwork') !== 'Legal & Administrative') {
+  fail('Old Paperwork category should map to Legal & Administrative');
+}
+if (canonicalCategory('Local businesses') !== 'Local Services') {
+  fail('Old Local businesses category should map to Local Services');
+}
+if (canonicalCategory('Walks') !== 'Outdoor Activities') {
+  fail('Old Walks category should map to Outdoor Activities');
+}
+if (canonicalCategory('Mystery topic') !== 'Mystery topic') {
+  fail('Unknown categories should stay readable');
+}
+if (Object.keys(CATEGORY_ALIASES).length < 5) fail('Category aliases for old posts are missing');
+if (hub && !hub.includes('journal-filter')) fail('Hub is missing category filter chips');
+if (hub && !hub.includes('data-filter="Local Services"')) fail('Hub filter is missing Local Services');
+if (hub && !hub.includes('data-filter="Legal &amp; Administrative"') && !hub.includes('data-filter="Legal & Administrative"')) {
+  fail('Hub filter is missing Legal & Administrative');
+}
 
 if (existsSync(join(ROOT, 'journal/sample-draft.html'))) {
   fail('Draft post was published to HTML');
