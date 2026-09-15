@@ -9,34 +9,33 @@
   <style>
     html, body { height: 100%; margin: 0; background: #f5ead8; }
   </style>
-</head>
-<body>
-  <script>
-    window.CMS_MANUAL_INIT = true;
-  </script>
-  <script src="https://unpkg.com/js-yaml@4.1.1/dist/js-yaml.min.js"></script>
-  <script src="https://unpkg.com/decap-cms@3.6.4/dist/decap-cms.js"></script>
   <script>
     (function () {
-      fetch('/admin/config.yml', { cache: 'no-store' })
-        .then(function (res) {
-          if (!res.ok) throw new Error('Could not load CMS config');
-          return res.text();
-        })
-        .then(function (text) {
-          var config = jsyaml.load(text);
-          config.backend = config.backend || {};
-          config.backend.base_url = window.location.origin;
-          config.backend.auth_endpoint = 'api/auth';
-          CMS.init({ config: config });
-          CMS.registerPreviewStyle('/styles.css');
-        })
-        .catch(function (err) {
-          document.body.innerHTML =
-            '<div style="font-family:Georgia,serif;max-width:36em;margin:3em auto;padding:0 1em;line-height:1.5">' +
-            '<h1>Admin could not load</h1><p>' + String(err.message || err) + '</p></div>';
+      var origin = window.location.origin;
+      function patch(text) {
+        return String(text).replace(/https:\/\/CMS_ORIGIN/g, origin);
+      }
+      var origFetch = window.fetch;
+      window.fetch = function (input, init) {
+        var url = typeof input === 'string' ? input : (input && input.url) || '';
+        var req = origFetch.apply(this, arguments);
+        if (String(url).indexOf('config.yml') === -1) return req;
+        return req.then(function (res) {
+          return res.text().then(function (text) {
+            return new Response(patch(text), {
+              status: res.status,
+              headers: { 'Content-Type': 'text/yaml; charset=utf-8' }
+            });
+          });
         });
+      };
     })();
+  </script>
+</head>
+<body>
+  <script src="https://unpkg.com/decap-cms@3.6.4/dist/decap-cms.js"></script>
+  <script>
+    if (window.CMS) CMS.registerPreviewStyle('/styles.css');
   </script>
 </body>
 </html>
