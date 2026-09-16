@@ -1,11 +1,9 @@
 backend:
   name: github
   repo: marknovak1/rivierarrival.com
-  branch: cms-pages-pilot
+  branch: main
   base_url: https://CMS_ORIGIN
   auth_endpoint: api/auth
-
-local_backend: true
 
 site_url: https://www.rivieraarrival.com
 display_url: https://www.rivieraarrival.com
