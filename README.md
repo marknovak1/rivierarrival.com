@@ -31,4 +31,4 @@ Pushes to `main` auto-deploy. Journal posts published in the CMS commit Markdown
 
 ## Journal admin
 
-After the one-time GitHub OAuth App setup (see the pull request), Nathalie signs in at `/admin/` with GitHub, writes a post, unchecks **Keep as draft**, and saves. The live page appears when the Vercel deploy finishes.
+The GitHub OAuth App is configured on Vercel (`OAUTH_CLIENT_ID`/`OAUTH_CLIENT_SECRET`), and CMS login works in production. Nathalie signs in at `/admin/` with GitHub, writes a post, unchecks **Keep as draft**, and saves. The live page appears when the Vercel deploy finishes.
