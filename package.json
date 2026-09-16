@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/build-journal.mjs",
-    "test": "node scripts/build-journal.mjs && node scripts/check-journal.mjs"
+    "build": "node scripts/build-pages.mjs && node scripts/build-journal.mjs",
+    "test": "npm run build && node scripts/check-journal.mjs"
   },
   "engines": {
     "node": ">=20"

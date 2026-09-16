@@ -64,6 +64,12 @@ if (sitemap) {
 
 if (admin && !admin.includes('decap-cms')) fail('Admin page does not load Decap CMS');
 if (config && !config.includes('folder: content/journal')) fail('CMS config is missing the journal collection');
+if (config && !/branch:\s*main\b/.test(config)) {
+  fail('CMS backend.branch must be "main" — this looks like a pilot-branch config (e.g. cms-pages-pilot) that was not reverted before merging');
+}
+if (config && /^local_backend:\s*true/m.test(config)) {
+  fail('CMS local_backend: true must be removed before merging — it is a local-testing-only setting');
+}
 if (CATEGORIES.length !== 22) fail(`Expected 22 journal categories, found ${CATEGORIES.length}`);
 if (config) {
   for (const label of CATEGORIES) {
@@ -112,6 +118,14 @@ if (!existsSync(join(ROOT, 'public/admin/index.html'))) {
 }
 if (!existsSync(join(ROOT, 'public/index.html'))) {
   fail('public/index.html missing');
+}
+
+const findingAHome = read('finding-a-home.html');
+if (findingAHome && !findingAHome.includes("I'll find your place")) {
+  fail('finding-a-home.html was not generated from content/pages/finding-a-home.md correctly');
+}
+if (!existsSync(join(ROOT, 'public/finding-a-home.html'))) {
+  fail('public/finding-a-home.html missing');
 }
 
 if (errors.length) {

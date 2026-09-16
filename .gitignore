@@ -6,3 +6,4 @@ node_modules/
 .env*
 /journal/*.html
 /public
+/finding-a-home.html
