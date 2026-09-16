@@ -2,6 +2,27 @@ function originOf(request) {
   return new URL(request.url).origin;
 }
 
+function getCookie(request, name) {
+  const header = request.headers.get('cookie') || '';
+  for (const part of header.split(/;\s*/)) {
+    const eq = part.indexOf('=');
+    if (eq === -1) continue;
+    if (part.slice(0, eq) === name) return decodeURIComponent(part.slice(eq + 1));
+  }
+  return null;
+}
+
+function timingSafeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length || a.length === 0) {
+    return false;
+  }
+  let result = 0;
+  for (let i = 0; i < a.length; i++) result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return result === 0;
+}
+
+const CLEAR_STATE_COOKIE = 'oauth_state=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0';
+
 function handshake(payload) {
   const status = payload.error ? 'error' : 'success';
   const message = `authorization:github:${status}:${JSON.stringify(payload)}`;
@@ -11,17 +32,21 @@ function handshake(payload) {
 <script>
 (function () {
   function receiveMessage(e) {
-    window.opener.postMessage(${JSON.stringify(message)}, e.origin);
+    if (e.origin !== window.location.origin || e.source !== window.opener) return;
+    window.opener.postMessage(${JSON.stringify(message)}, window.location.origin);
     window.removeEventListener('message', receiveMessage, false);
   }
   window.addEventListener('message', receiveMessage, false);
-  window.opener.postMessage('authorizing:github', '*');
+  window.opener.postMessage('authorizing:github', window.location.origin);
 })();
 </script>
 </body></html>`;
   return new Response(html, {
     status: payload.error ? 400 : 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Set-Cookie': CLEAR_STATE_COOKIE
+    }
   });
 }
 
@@ -36,7 +61,18 @@ export async function GET(request) {
     });
   }
 
-  const code = new URL(request.url).searchParams.get('code') || '';
+  const params = new URL(request.url).searchParams;
+  const returnedState = params.get('state') || '';
+  const cookieState = getCookie(request, 'oauth_state') || '';
+  if (!timingSafeEqual(returnedState, cookieState)) {
+    return handshake({
+      error: 'invalid',
+      errorCode: 'state_mismatch',
+      provider: 'github'
+    });
+  }
+
+  const code = params.get('code') || '';
   if (!code) {
     return handshake({
       error: 'invalid',
