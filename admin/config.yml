@@ -84,10 +84,11 @@ collections:
         name: description
         widget: text
         hint: One or two sentences for the journal list and Google.
-      - label: Cover photo
+      - label: Cover photo (optional)
         name: image
         widget: image
-        required: true
+        required: false
+        hint: Leave blank to use the site's default journal cover photo.
       - label: Cover photo description
         name: imageAlt
         widget: string

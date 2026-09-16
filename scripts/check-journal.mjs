@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CATEGORIES, CATEGORY_ALIASES, canonicalCategory } from './journal-categories.mjs';
+import { DEFAULT_COVER, loadPosts, renderHub, renderPost } from './build-journal.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
@@ -52,6 +53,48 @@ if (post) {
   }
   if (!post.includes('/guide-businesses.html')) fail('Post is missing a related guide link');
 }
+
+// The no-image fixture is draft:true (never built to HTML or listed anywhere
+// public), so its default-cover fallback is verified by calling the render
+// functions directly rather than reading generated output off disk.
+// EXPECTED_DEFAULT_COVER is a literal, independent of build-journal.mjs's own
+// DEFAULT_COVER export, so this test still fails if someone breaks or
+// changes that constant, rather than just checking internal consistency.
+const EXPECTED_DEFAULT_COVER = '/images/journal-featured.jpg';
+if (DEFAULT_COVER !== EXPECTED_DEFAULT_COVER) {
+  fail(`build-journal.mjs's DEFAULT_COVER changed unexpectedly to "${DEFAULT_COVER}"`);
+}
+const allPostsForTest = loadPosts();
+const noCoverPost = allPostsForTest.find((p) => p.slug === 'no-cover-photo-fixture');
+if (!noCoverPost) {
+  fail('Test fixture content/journal/no-cover-photo-fixture.md is missing or failed to parse');
+} else {
+  if (noCoverPost.image !== EXPECTED_DEFAULT_COVER) {
+    fail(`Post with no cover photo should resolve to the default cover, got "${noCoverPost.image}"`);
+  }
+  const renderedFixture = renderPost(noCoverPost);
+  if (!renderedFixture.includes(`<img src="${EXPECTED_DEFAULT_COVER}"`)) {
+    fail('Post with no cover photo should fall back to the default cover in its header image');
+  }
+  if (!renderedFixture.includes(`<meta property="og:image" content="https://www.rivieraarrival.com${EXPECTED_DEFAULT_COVER}">`)) {
+    fail('Post with no cover photo should fall back to the default cover in og:image');
+  }
+  if (!renderedFixture.includes(`"image":"https://www.rivieraarrival.com${EXPECTED_DEFAULT_COVER}"`)) {
+    fail('Post with no cover photo should fall back to the default cover in JSON-LD');
+  }
+  const renderedHubWithFixture = renderHub([{ ...noCoverPost, draft: false }]);
+  if (!renderedHubWithFixture.includes(`<img src="${EXPECTED_DEFAULT_COVER}"`)) {
+    fail('Hub card for the no-cover-photo fixture should fall back to the default cover');
+  }
+}
+if (!noCoverPost || !noCoverPost.draft) {
+  fail('Test fixture content/journal/no-cover-photo-fixture.md must stay draft: true');
+}
+if (existsSync(join(ROOT, 'journal/no-cover-photo-fixture.html'))) {
+  fail('Draft test fixture no-cover-photo-fixture was published to HTML');
+}
+if (hub.includes('no-cover-photo-fixture')) fail('Draft test fixture appeared on the hub');
+if (sitemap.includes('no-cover-photo-fixture')) fail('Draft test fixture appeared in the sitemap');
 
 if (sitemap) {
   if (!sitemap.includes('https://www.rivieraarrival.com/journal/')) fail('Sitemap missing journal hub');
