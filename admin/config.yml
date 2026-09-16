@@ -1,9 +1,11 @@
 backend:
   name: github
   repo: marknovak1/rivierarrival.com
-  branch: main
+  branch: cms-pages-pilot
   base_url: https://CMS_ORIGIN
   auth_endpoint: api/auth
+
+local_backend: true
 
 site_url: https://www.rivieraarrival.com
 display_url: https://www.rivieraarrival.com
@@ -95,3 +97,50 @@ collections:
         name: body
         widget: markdown
         hint: Write the post here. You can add extra photos with the image button.
+
+  - name: pages
+    label: Pages
+    files:
+      - name: finding-a-home
+        label: "Finding a Home page"
+        file: content/pages/finding-a-home.md
+        fields:
+          - label: Page title
+            name: title
+            widget: string
+          - label: Meta description
+            name: description
+            widget: text
+            hint: Shown to Google, not on the page itself.
+          - label: Eyebrow tag
+            name: eyebrow
+            widget: string
+          - label: Hero heading
+            name: hero_heading
+            widget: string
+          - label: Hero intro
+            name: hero_intro
+            widget: text
+          - label: Call-to-action label
+            name: cta_label
+            widget: string
+          - label: Call-to-action link
+            name: cta_link
+            widget: string
+          - label: Sections
+            name: sections
+            widget: list
+            fields:
+              - label: Heading
+                name: heading
+                widget: string
+              - label: Body
+                name: body
+                widget: markdown
+          - label: "\"See how it works\" link text"
+            name: service_link_text
+            widget: string
+            hint: "Markdown link syntax, e.g. [link text](page.html)"
+          - label: Closing line
+            name: closing_text
+            widget: string
