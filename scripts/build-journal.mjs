@@ -12,6 +12,7 @@ const CONTENT_DIR = join(ROOT, 'content', 'journal');
 const OUT_DIR = join(ROOT, 'journal');
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
 const DEFAULT_RELATED = RELATED_BY_CATEGORY['Tips & Resources'];
+export const DEFAULT_COVER = '/images/journal-featured.jpg';
 
 marked.setOptions({ gfm: true, breaks: false });
 
@@ -67,7 +68,7 @@ function absoluteUrl(path) {
   return `${SITE}${publicImage(path)}`;
 }
 
-function loadPosts() {
+export function loadPosts() {
   let files = [];
   try {
     files = readdirSync(CONTENT_DIR).filter((name) => name.endsWith('.md'));
@@ -103,7 +104,7 @@ function loadPosts() {
       draft,
       category: canonicalCategory(data.category),
       description,
-      image: publicImage(data.image || '/images/journal-featured.jpg'),
+      image: publicImage(data.image || DEFAULT_COVER),
       imageAlt: String(data.imageAlt || data.title || 'Journal photo'),
       bodyHtml: html
     });
@@ -113,7 +114,7 @@ function loadPosts() {
   return posts;
 }
 
-function jsonLd(post) {
+export function jsonLd(post) {
   const url = `${SITE}/journal/${post.slug}.html`;
   return {
     '@context': 'https://schema.org',
@@ -152,9 +153,10 @@ function relatedBlock(post) {
     </aside>`;
 }
 
-function renderPost(post) {
+export function renderPost(post) {
   const canonical = `${SITE}/journal/${post.slug}.html`;
-  const extraHead = `<script type="application/ld+json">${JSON.stringify(jsonLd(post))}</script>`;
+  const extraHead = `<meta property="og:image" content="${escapeHtml(absoluteUrl(post.image))}">
+<script type="application/ld+json">${JSON.stringify(jsonLd(post))}</script>`;
   const body = `${siteHeader('journal')}
   <article style="max-width: 820px; margin: 0 auto; padding: 34px 48px 0">
     <p style="margin: 0 0 8px"><a href="/journal/" style="font-size: 14px">← All posts</a></p>
@@ -191,7 +193,7 @@ function filterButtons(posts) {
   return `<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px">${buttons.join('\n        ')}</div>`;
 }
 
-function renderHub(posts) {
+export function renderHub(posts) {
   const canonical = `${SITE}/journal/`;
   const featured = posts[0];
   const rest = posts.slice(1);
@@ -353,14 +355,20 @@ function assemblePublic() {
   }
 }
 
-const allPosts = loadPosts();
-const published = allPosts.filter((post) => !post.draft);
-resetOutDir();
-writeFileSync(join(OUT_DIR, 'index.html'), renderHub(published));
-for (const post of published) {
-  writeFileSync(join(OUT_DIR, `${post.slug}.html`), renderPost(post));
-}
-writeSitemap(published);
-assemblePublic();
+function main() {
+  const allPosts = loadPosts();
+  const published = allPosts.filter((post) => !post.draft);
+  resetOutDir();
+  writeFileSync(join(OUT_DIR, 'index.html'), renderHub(published));
+  for (const post of published) {
+    writeFileSync(join(OUT_DIR, `${post.slug}.html`), renderPost(post));
+  }
+  writeSitemap(published);
+  assemblePublic();
 
-console.log(`Journal build: ${published.length} published, ${allPosts.length - published.length} draft`);
+  console.log(`Journal build: ${published.length} published, ${allPosts.length - published.length} draft`);
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main();
+}
