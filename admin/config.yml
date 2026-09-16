@@ -145,3 +145,146 @@ collections:
           - label: Closing line
             name: closing_text
             widget: string
+
+      - name: settling-in
+        label: "Settling in page"
+        file: content/pages/settling-in.md
+        fields:
+          - label: Page title
+            name: title
+            widget: string
+          - label: Meta description
+            name: description
+            widget: text
+            hint: Shown to Google, not on the page itself.
+          - label: Eyebrow tag
+            name: eyebrow
+            widget: string
+          - label: Hero heading
+            name: hero_heading
+            widget: string
+          - label: Hero intro
+            name: hero_intro
+            widget: text
+          - label: Guides section heading
+            name: guides_heading
+            widget: string
+          - label: Guides
+            name: guides
+            widget: list
+            summary: "{{heading}}"
+            fields:
+              - label: Heading
+                name: heading
+                widget: string
+              - label: Description
+                name: description
+                widget: text
+              - label: Cover photo
+                name: image
+                widget: image
+                required: false
+                media_folder: "/images"
+                public_folder: "/images"
+                hint: Leave blank to use the site's default cover photo.
+              - label: Cover photo description
+                name: imageAlt
+                widget: string
+                required: false
+                hint: Describe the photo for screen readers (not shown as a caption).
+              - label: Links to guide
+                name: link
+                widget: select
+                options:
+                  - { label: "Visas & paperwork (guide-visas.html)", value: "guide-visas.html" }
+                  - { label: "Bank & phone (guide-banking.html)", value: "guide-banking.html" }
+                  - { label: "Healthcare (guide-healthcare.html)", value: "guide-healthcare.html" }
+                  - { label: "Getting around (guide-transport.html)", value: "guide-transport.html" }
+                  - { label: "Learning French (guide-french.html)", value: "guide-french.html" }
+                  - { label: "Local businesses (guide-businesses.html)", value: "guide-businesses.html" }
+          - label: "\"Stuck on something\" heading"
+            name: cta_heading
+            widget: string
+          - label: "\"Stuck on something\" text"
+            name: cta_text
+            widget: text
+          - label: Call-to-action label
+            name: cta_label
+            widget: string
+          - label: Call-to-action link
+            name: cta_link
+            widget: string
+
+      - name: neighborhoods
+        label: "Neighborhoods page"
+        file: content/pages/neighborhoods.md
+        fields:
+          - label: Page title
+            name: title
+            widget: string
+          - label: Meta description
+            name: description
+            widget: text
+            hint: Shown to Google, not on the page itself.
+          - label: Eyebrow tag
+            name: eyebrow
+            widget: string
+          - label: Hero heading
+            name: hero_heading
+            widget: string
+          - label: Hero intro
+            name: hero_intro
+            widget: text
+          - label: Hero photo
+            name: hero_image
+            widget: image
+            required: false
+            media_folder: "/images"
+            public_folder: "/images"
+            hint: Leave blank to use the site's default cover photo.
+          - label: Hero photo description
+            name: hero_image_alt
+            widget: string
+            required: false
+            hint: Describe the photo for screen readers (not shown as a caption).
+          - label: "\"Town by town\" heading"
+            name: towns_heading
+            widget: string
+          - label: "\"Town by town\" intro"
+            name: towns_intro
+            widget: text
+          - label: Towns
+            name: towns
+            widget: list
+            summary: "{{name}}"
+            fields:
+              - label: Name
+                name: name
+                widget: string
+              - label: Description
+                name: description
+                widget: text
+              - label: Cover photo
+                name: image
+                widget: image
+                required: false
+                media_folder: "/images"
+                public_folder: "/images"
+                hint: Leave blank to use the site's default cover photo.
+              - label: Cover photo description
+                name: imageAlt
+                widget: string
+                required: false
+                hint: Describe the photo for screen readers (not shown as a caption).
+          - label: "\"Not sure yet\" heading"
+            name: cta_heading
+            widget: string
+          - label: "\"Not sure yet\" text"
+            name: cta_text
+            widget: text
+          - label: Call-to-action label
+            name: cta_label
+            widget: string
+          - label: Call-to-action link
+            name: cta_link
+            widget: string

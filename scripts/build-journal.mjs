@@ -4,7 +4,9 @@ import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { marked } from 'marked';
 import { CATEGORIES, RELATED_BY_CATEGORY, canonicalCategory } from './journal-categories.mjs';
-import { escapeHtml, siteHeader, siteFooter, siteScripts, layout } from './site-layout.mjs';
+import { DEFAULT_COVER, escapeHtml, siteHeader, siteFooter, siteScripts, layout } from './site-layout.mjs';
+
+export { DEFAULT_COVER };
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://www.rivieraarrival.com';
@@ -12,7 +14,6 @@ const CONTENT_DIR = join(ROOT, 'content', 'journal');
 const OUT_DIR = join(ROOT, 'journal');
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
 const DEFAULT_RELATED = RELATED_BY_CATEGORY['Tips & Resources'];
-export const DEFAULT_COVER = '/images/journal-featured.jpg';
 
 marked.setOptions({ gfm: true, breaks: false });
 

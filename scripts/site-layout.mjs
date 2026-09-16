@@ -1,3 +1,5 @@
+export const DEFAULT_COVER = '/images/journal-featured.jpg';
+
 export function escapeHtml(value) {
   return String(value ?? '')
     .replace(/&/g, '&amp;')
