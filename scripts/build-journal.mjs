@@ -68,17 +68,17 @@ function absoluteUrl(path) {
   return `${SITE}${publicImage(path)}`;
 }
 
-export function loadPosts() {
+export function loadPosts(dir = CONTENT_DIR) {
   let files = [];
   try {
-    files = readdirSync(CONTENT_DIR).filter((name) => name.endsWith('.md'));
+    files = readdirSync(dir).filter((name) => name.endsWith('.md'));
   } catch {
     return [];
   }
 
   const posts = [];
   for (const file of files) {
-    const raw = readFileSync(join(CONTENT_DIR, file), 'utf8');
+    const raw = readFileSync(join(dir, file), 'utf8');
     const parsed = matter(raw);
     const data = parsed.data || {};
     const draft = data.draft === true || data.draft === 'true';

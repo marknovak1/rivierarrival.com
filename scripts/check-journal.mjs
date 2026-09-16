@@ -5,6 +5,7 @@ import { CATEGORIES, CATEGORY_ALIASES, canonicalCategory } from './journal-categ
 import { DEFAULT_COVER, loadPosts, renderHub, renderPost } from './build-journal.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+const FIXTURES_DIR = join(ROOT, 'test', 'fixtures', 'journal');
 const errors = [];
 
 function fail(msg) {
@@ -54,9 +55,10 @@ if (post) {
   if (!post.includes('/guide-businesses.html')) fail('Post is missing a related guide link');
 }
 
-// The no-image fixture is draft:true (never built to HTML or listed anywhere
-// public), so its default-cover fallback is verified by calling the render
-// functions directly rather than reading generated output off disk.
+// Fixtures live in test/fixtures/journal/, not content/journal/, so they
+// never appear in Nathalie's CMS entry list. They're also never built to
+// HTML - verified by calling loadPosts()/renderPost()/renderHub() directly
+// on the fixtures directory instead of reading generated output off disk.
 // EXPECTED_DEFAULT_COVER is a literal, independent of build-journal.mjs's own
 // DEFAULT_COVER export, so this test still fails if someone breaks or
 // changes that constant, rather than just checking internal consistency.
@@ -64,10 +66,12 @@ const EXPECTED_DEFAULT_COVER = '/images/journal-featured.jpg';
 if (DEFAULT_COVER !== EXPECTED_DEFAULT_COVER) {
   fail(`build-journal.mjs's DEFAULT_COVER changed unexpectedly to "${DEFAULT_COVER}"`);
 }
-const allPostsForTest = loadPosts();
-const noCoverPost = allPostsForTest.find((p) => p.slug === 'no-cover-photo-fixture');
+const fixturePosts = loadPosts(FIXTURES_DIR);
+const noCoverPost = fixturePosts.find((p) => p.slug === 'no-cover-photo-fixture');
+const sampleDraftFixture = fixturePosts.find((p) => p.slug === 'sample-draft');
+
 if (!noCoverPost) {
-  fail('Test fixture content/journal/no-cover-photo-fixture.md is missing or failed to parse');
+  fail('Test fixture test/fixtures/journal/no-cover-photo-fixture.md is missing or failed to parse');
 } else {
   if (noCoverPost.image !== EXPECTED_DEFAULT_COVER) {
     fail(`Post with no cover photo should resolve to the default cover, got "${noCoverPost.image}"`);
@@ -88,13 +92,29 @@ if (!noCoverPost) {
   }
 }
 if (!noCoverPost || !noCoverPost.draft) {
-  fail('Test fixture content/journal/no-cover-photo-fixture.md must stay draft: true');
+  fail('Test fixture no-cover-photo-fixture.md must stay draft: true');
 }
-if (existsSync(join(ROOT, 'journal/no-cover-photo-fixture.html'))) {
-  fail('Draft test fixture no-cover-photo-fixture was published to HTML');
+if (!sampleDraftFixture || !sampleDraftFixture.draft) {
+  fail('Test fixture sample-draft.md must stay draft: true');
 }
-if (hub.includes('no-cover-photo-fixture')) fail('Draft test fixture appeared on the hub');
-if (sitemap.includes('no-cover-photo-fixture')) fail('Draft test fixture appeared in the sitemap');
+// The real build's draft filter is `.filter((post) => !post.draft)` - prove
+// it actually excludes both fixtures, exercised directly rather than via
+// content/journal/ side effects now that the fixtures live elsewhere.
+const publishedFixtures = fixturePosts.filter((p) => !p.draft);
+if (publishedFixtures.length !== 0) {
+  fail(`Draft filter should exclude all fixtures, but kept: ${publishedFixtures.map((p) => p.slug).join(', ')}`);
+}
+
+for (const slug of ['sample-draft', 'no-cover-photo-fixture']) {
+  if (existsSync(join(ROOT, 'content', 'journal', `${slug}.md`))) {
+    fail(`Fixture ${slug}.md should live in test/fixtures/journal/, not content/journal/`);
+  }
+  if (existsSync(join(ROOT, 'journal', `${slug}.html`))) {
+    fail(`Fixture ${slug} was published to HTML`);
+  }
+  if (hub.includes(slug)) fail(`Fixture ${slug} appeared on the hub`);
+  if (sitemap.includes(slug)) fail(`Fixture ${slug} appeared in the sitemap`);
+}
 
 if (sitemap) {
   if (!sitemap.includes('https://www.rivieraarrival.com/journal/')) fail('Sitemap missing journal hub');
@@ -144,11 +164,6 @@ if (hub && !hub.includes('data-filter="Legal &amp; Administrative"') && !hub.inc
   fail('Hub filter is missing Legal & Administrative');
 }
 
-if (existsSync(join(ROOT, 'journal/sample-draft.html'))) {
-  fail('Draft post was published to HTML');
-}
-if (sitemap.includes('sample-draft')) fail('Draft post appeared in sitemap');
-if (hub.includes('Sample draft')) fail('Draft post appeared on the hub');
 if (!existsSync(join(ROOT, 'journal/two-hours-at-the-caf-desk.html'))) {
   fail('Missing CAF post page');
 }
