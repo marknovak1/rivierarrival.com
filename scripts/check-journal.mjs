@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import matter from 'gray-matter';
 import { CATEGORIES, CATEGORY_ALIASES, canonicalCategory } from './journal-categories.mjs';
 import { DEFAULT_COVER, loadPosts, renderHub, renderPost } from './build-journal.mjs';
 
@@ -141,7 +142,7 @@ if (config) {
   for (const label of CATEGORIES) {
     if (!config.includes(label)) fail(`CMS config is missing category "${label}"`);
   }
-  if (config.includes('Local businesses') || config.includes('Food & markets')) {
+  if (config.includes('- "Local businesses"') || config.includes('- "Food & markets"')) {
     fail('CMS config still lists an old category option');
   }
 }
@@ -187,6 +188,35 @@ if (findingAHome && !findingAHome.includes("I'll find your place")) {
 }
 if (!existsSync(join(ROOT, 'public/finding-a-home.html'))) {
   fail('public/finding-a-home.html missing');
+}
+
+const settlingIn = read('settling-in.html');
+if (settlingIn && !settlingIn.includes('The guides')) {
+  fail('settling-in.html was not generated from content/pages/settling-in.md correctly');
+}
+if (!existsSync(join(ROOT, 'public/settling-in.html'))) {
+  fail('public/settling-in.html missing');
+}
+
+const neighborhoods = read('neighborhoods.html');
+if (neighborhoods && !neighborhoods.includes('Town by town')) {
+  fail('neighborhoods.html was not generated from content/pages/neighborhoods.md correctly');
+}
+if (!existsSync(join(ROOT, 'public/neighborhoods.html'))) {
+  fail('public/neighborhoods.html missing');
+}
+
+// Nathalie picks a guide from a select widget rather than typing a link, but
+// prove the linked files actually exist so a renamed/removed guide page
+// can't silently produce a dead card.
+const settlingInPath = join(ROOT, 'content', 'pages', 'settling-in.md');
+if (existsSync(settlingInPath)) {
+  const { data: settlingInData } = matter(readFileSync(settlingInPath, 'utf8'));
+  for (const guide of settlingInData.guides || []) {
+    if (!existsSync(join(ROOT, guide.link))) {
+      fail(`settling-in.md guide "${guide.heading}" links to "${guide.link}", which does not exist`);
+    }
+  }
 }
 
 if (errors.length) {
