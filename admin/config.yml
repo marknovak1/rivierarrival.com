@@ -5,6 +5,8 @@ backend:
   base_url: https://CMS_ORIGIN
   auth_endpoint: api/auth
 
+publish_mode: editorial_workflow
+
 site_url: https://www.rivieraarrival.com
 display_url: https://www.rivieraarrival.com
 
@@ -46,11 +48,11 @@ collections:
         format: YYYY-MM-DD
         required: false
         hint: Leave blank to use the same day as Date.
-      - label: Keep as draft
+      - label: Hide this post from the site
         name: draft
         widget: boolean
-        default: true
-        hint: On = saved but hidden from the public site. Off = publish on the next site build (about a minute after you save).
+        default: false
+        hint: On = never shows on the site, even after this entry is published through the workflow below.
       - label: Category
         name: category
         widget: select

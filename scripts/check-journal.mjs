@@ -70,6 +70,9 @@ if (config && !/branch:\s*main\b/.test(config)) {
 if (config && /^local_backend:\s*true/m.test(config)) {
   fail('CMS local_backend: true must be removed before merging — it is a local-testing-only setting');
 }
+if (config && !/^publish_mode:\s*editorial_workflow\s*$/m.test(config)) {
+  fail('CMS config is missing publish_mode: editorial_workflow');
+}
 if (CATEGORIES.length !== 22) fail(`Expected 22 journal categories, found ${CATEGORIES.length}`);
 if (config) {
   for (const label of CATEGORIES) {
