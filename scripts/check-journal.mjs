@@ -219,6 +219,100 @@ if (existsSync(settlingInPath)) {
   }
 }
 
+const INDEXABLE_GUIDES = [
+  'guide-moving-to-the-french-riviera.html',
+  'guide-retiring-on-the-french-riviera.html',
+  'guide-renting-an-apartment-in-nice.html',
+  'guide-international-schools.html'
+];
+const COST_GUIDE = 'guide-cost-of-living.html';
+const GUIDE_SOURCES = [
+  'content/pages/guide-moving-to-the-french-riviera.md',
+  'content/pages/guide-cost-of-living.md',
+  'content/pages/guide-retiring-on-the-french-riviera.md',
+  'content/pages/guide-renting-an-apartment-in-nice.md',
+  'content/pages/guide-international-schools.md'
+];
+
+function headerHtml(html) {
+  const start = html.indexOf('<header');
+  const end = html.indexOf('</header>');
+  if (start === -1 || end === -1 || end < start) return '';
+  return html.slice(start, end);
+}
+
+function hasType(html, type) {
+  return html.includes(`"@type":"${type}"`) || html.includes(`"@type": "${type}"`);
+}
+
+for (const page of INDEXABLE_GUIDES) {
+  const html = read(page);
+  if (!html) continue;
+  if (!hasType(html, 'Article')) fail(`${page} is missing Article JSON-LD`);
+  if (!hasType(html, 'FAQPage')) fail(`${page} is missing FAQPage JSON-LD`);
+  if (!html.includes('href="contact.html"')) fail(`${page} is missing the contact link`);
+  if (!html.includes('Talk to Nathalie')) fail(`${page} is missing the Talk to Nathalie CTA`);
+  if (/\bnoindex\b/i.test(html)) fail(`${page} should stay indexable`);
+  if (sitemap && !sitemap.includes(`https://www.rivieraarrival.com/${page}`)) {
+    fail(`Sitemap is missing ${page}`);
+  }
+  if (!existsSync(join(ROOT, 'public', page))) fail(`public/${page} missing`);
+  if (!/<title>[^<]+<\/title>/.test(html)) fail(`${page} is missing a title`);
+  if (!html.includes('name="description" content="')) fail(`${page} is missing a meta description`);
+}
+
+const cost = read(COST_GUIDE);
+if (cost) {
+  if (!hasType(cost, 'Article')) fail('Cost guide is missing Article JSON-LD');
+  if (!hasType(cost, 'FAQPage')) fail('Cost guide is missing FAQPage JSON-LD');
+  if (!cost.includes('href="contact.html"')) fail('Cost guide is missing the contact link');
+  if (!cost.includes('Talk to Nathalie')) fail('Cost guide is missing the Talk to Nathalie CTA');
+  if (!/\bnoindex\b/i.test(cost)) fail('Cost guide must be noindex');
+  if (!cost.includes('Nathalie to fill')) fail('Cost guide is missing figure placeholders');
+  if (cost.includes('€')) fail('Cost guide must not contain a euro sign');
+  if (/\d[\d\s.,]*\s*euros?\b/i.test(cost)) fail('Cost guide must not contain a euro amount');
+  if (headerHtml(cost).includes(COST_GUIDE)) fail('Cost guide header must not link itself as navigation');
+}
+if (sitemap && sitemap.includes('guide-cost-of-living')) fail('Sitemap must not include the cost-of-living guide');
+const robots = read('robots.txt');
+if (robots && robots.includes('guide-cost-of-living')) {
+  fail('robots.txt must not disallow the cost-of-living guide');
+}
+if (robots && !robots.includes('Disallow: /admin/')) {
+  fail('robots.txt must still disallow /admin/');
+}
+const movingGuide = read('guide-moving-to-the-french-riviera.html');
+if (movingGuide.includes(COST_GUIDE)) {
+  fail('Moving guide must not link the cost-of-living page while it is noindex');
+}
+if (/hidden from Google/i.test(movingGuide)) {
+  fail('Moving guide must not say the cost page is hidden from Google');
+}
+const schoolsGuide = read('guide-international-schools.html');
+const schoolsDescription = 'International and bilingual schools in Nice and on the French Riviera: curricula, languages, and how admissions work for families moving here.';
+if (schoolsGuide && !schoolsGuide.includes(`content="${schoolsDescription}"`)) {
+  fail('International schools meta description is wrong');
+}
+if (!existsSync(join(ROOT, 'public', COST_GUIDE))) fail(`public/${COST_GUIDE} missing`);
+
+const homepage = read('index.html');
+if (homepage.includes(COST_GUIDE)) fail('Homepage must not link the noindex cost-of-living guide');
+if (settlingIn && settlingIn.includes(COST_GUIDE)) {
+  fail('settling-in.html must not link the noindex cost-of-living guide');
+}
+for (const page of [...INDEXABLE_GUIDES, COST_GUIDE, 'settling-in.html', 'index.html', 'finding-a-home.html']) {
+  const html = page === 'settling-in.html' ? settlingIn : page === 'index.html' ? homepage : read(page);
+  if (html && headerHtml(html).includes(COST_GUIDE)) {
+    fail(`${page} primary nav links the cost-of-living guide`);
+  }
+}
+
+if (config) {
+  for (const file of GUIDE_SOURCES) {
+    if (!config.includes(file)) fail(`CMS config is missing ${file}`);
+  }
+}
+
 if (errors.length) {
   console.error(errors.map((e) => ` - ${e}`).join('\n'));
   process.exit(1);
