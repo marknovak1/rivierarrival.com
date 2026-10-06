@@ -341,7 +341,7 @@ collections:
             name: noindex
             widget: boolean
             default: false
-            hint: "On = noindex, left out of the sitemap, and blocked in robots.txt. Leave this off once the page should be found." 
+            hint: "On = noindex and left out of the sitemap. Leave this off once the page should be found." 
           - label: Back link label
             name: back_label
             widget: string
@@ -456,7 +456,7 @@ collections:
             name: noindex
             widget: boolean
             default: false
-            hint: "On = noindex, left out of the sitemap, and blocked in robots.txt. Leave this off once the page should be found." 
+            hint: "On = noindex and left out of the sitemap. Leave this off once the page should be found." 
           - label: Back link label
             name: back_label
             widget: string
@@ -603,7 +603,7 @@ collections:
             name: noindex
             widget: boolean
             default: false
-            hint: "On = noindex, left out of the sitemap, and blocked in robots.txt. Leave this off once the page should be found." 
+            hint: "On = noindex and left out of the sitemap. Leave this off once the page should be found." 
           - label: Back link label
             name: back_label
             widget: string
@@ -718,7 +718,7 @@ collections:
             name: noindex
             widget: boolean
             default: false
-            hint: "On = noindex, left out of the sitemap, and blocked in robots.txt. Leave this off once the page should be found." 
+            hint: "On = noindex and left out of the sitemap. Leave this off once the page should be found." 
           - label: Back link label
             name: back_label
             widget: string
@@ -833,7 +833,7 @@ collections:
             name: noindex
             widget: boolean
             default: false
-            hint: "On = noindex, left out of the sitemap, and blocked in robots.txt. Leave this off once the page should be found." 
+            hint: "On = noindex and left out of the sitemap. Leave this off once the page should be found." 
           - label: Back link label
             name: back_label
             widget: string

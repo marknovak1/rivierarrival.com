@@ -61,7 +61,7 @@ sections:
 
       If the move is a retirement rather than a job, start with [Retiring on the French Riviera](guide-retiring-on-the-french-riviera.html). The visitor card has a published income floor, a health-insurance condition, and a ban on working. Those are not details to discover at the consulate window.
 
-      I am not going to invent a monthly budget on this page. Rents and groceries on this coast are real, and they are not the same in Menton as they are in Cannes. I am filling [cost of living, town by town](guide-cost-of-living.html) only with figures I have checked. Until those blanks are filled, that page is hidden from Google on purpose. Use it as a list of what to ask me, not as a price.
+      I am not going to invent a monthly budget on this page. Rents and groceries on this coast are real, and they are not the same in Menton as they are in Cannes. Ask me for the town you are considering, and I will tell you what I am seeing.
 
       The rest of the first month is already written, from the same desk: [bank and phone](guide-banking.html), [healthcare](guide-healthcare.html), [getting around](guide-transport.html), [learning French](guide-french.html), and [local businesses](guide-businesses.html). The whole shelf is [Settling in](settling-in.html). If you want the smaller stories, they are in [the journal](/journal/). And if you want a person rather than another tab, the button below comes to me.
 faqs:
@@ -78,8 +78,6 @@ faqs:
     answer: |-
       Both, but they are different jobs. The guides are here so you can see the order. Finding the place is the concierge work: I search, visit and negotiate so you are not doing viewings from another time zone. Write to me if that is what you need.
 related:
-  - label: "Cost of living, town by town (figures still blank)"
-    href: guide-cost-of-living.html
   - label: "Retiring on the French Riviera"
     href: guide-retiring-on-the-french-riviera.html
   - label: "Renting an apartment in Nice as a foreigner"

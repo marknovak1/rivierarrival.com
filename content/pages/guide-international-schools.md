@@ -1,6 +1,6 @@
 ---
 title: "International schools in Nice and on the French Riviera"
-description: "International schools in Nice and bilingual schools on the French Riviera, named only where each school's own website confirms it."
+description: "International and bilingual schools in Nice and on the French Riviera: curricula, languages, and how admissions work for families moving here."
 eyebrow: "Schools on the coast"
 hero_heading: "International schools in Nice and along the Riviera"
 hero_intro: "Families write and ask for the international school, as if there were one. There are a few, and they are not the same kind of school. I only name a school here after I have read it on that school's own website."

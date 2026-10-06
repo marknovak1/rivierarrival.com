@@ -275,8 +275,23 @@ if (cost) {
 }
 if (sitemap && sitemap.includes('guide-cost-of-living')) fail('Sitemap must not include the cost-of-living guide');
 const robots = read('robots.txt');
-if (robots && !robots.includes('Disallow: /guide-cost-of-living.html')) {
-  fail('robots.txt must disallow the cost-of-living guide while it is noindex');
+if (robots && robots.includes('guide-cost-of-living')) {
+  fail('robots.txt must not disallow the cost-of-living guide');
+}
+if (robots && !robots.includes('Disallow: /admin/')) {
+  fail('robots.txt must still disallow /admin/');
+}
+const movingGuide = read('guide-moving-to-the-french-riviera.html');
+if (movingGuide.includes(COST_GUIDE)) {
+  fail('Moving guide must not link the cost-of-living page while it is noindex');
+}
+if (/hidden from Google/i.test(movingGuide)) {
+  fail('Moving guide must not say the cost page is hidden from Google');
+}
+const schoolsGuide = read('guide-international-schools.html');
+const schoolsDescription = 'International and bilingual schools in Nice and on the French Riviera: curricula, languages, and how admissions work for families moving here.';
+if (schoolsGuide && !schoolsGuide.includes(`content="${schoolsDescription}"`)) {
+  fail('International schools meta description is wrong');
 }
 if (!existsSync(join(ROOT, 'public', COST_GUIDE))) fail(`public/${COST_GUIDE} missing`);
 
