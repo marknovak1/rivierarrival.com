@@ -202,6 +202,10 @@ collections:
                   - { label: "Getting around (guide-transport.html)", value: "guide-transport.html" }
                   - { label: "Learning French (guide-french.html)", value: "guide-french.html" }
                   - { label: "Local businesses (guide-businesses.html)", value: "guide-businesses.html" }
+                  - { label: "Moving from the US & Canada (guide-moving-to-the-french-riviera.html)", value: "guide-moving-to-the-french-riviera.html" }
+                  - { label: "Retiring here (guide-retiring-on-the-french-riviera.html)", value: "guide-retiring-on-the-french-riviera.html" }
+                  - { label: "Renting as a foreigner (guide-renting-an-apartment-in-nice.html)", value: "guide-renting-an-apartment-in-nice.html" }
+                  - { label: "International schools (guide-international-schools.html)", value: "guide-international-schools.html" }
           - label: "\"Stuck on something\" heading"
             name: cta_heading
             widget: string
@@ -280,6 +284,614 @@ collections:
             name: cta_heading
             widget: string
           - label: "\"Not sure yet\" text"
+            name: cta_text
+            widget: text
+          - label: Call-to-action label
+            name: cta_label
+            widget: string
+          - label: Call-to-action link
+            name: cta_link
+            widget: string
+
+      - name: guide-moving-to-the-french-riviera
+        label: "Guide: Moving to the French Riviera"
+        file: content/pages/guide-moving-to-the-french-riviera.md
+        fields:
+          - label: Page title
+            name: title
+            widget: string
+          - label: Meta description
+            name: description
+            widget: text
+            hint: "Shown to Google, not as the on-page intro."
+          - label: Eyebrow tag
+            name: eyebrow
+            widget: string
+          - label: Hero heading
+            name: hero_heading
+            widget: string
+          - label: Hero intro
+            name: hero_intro
+            widget: text
+          - label: Hero photo
+            name: hero_image
+            widget: image
+            required: false
+            media_folder: "/images"
+            public_folder: "/images"
+            hint: Leave blank to use the site's default cover photo.
+          - label: Hero photo description
+            name: hero_image_alt
+            widget: string
+            required: false
+            hint: "Describe the photo for screen readers."
+          - label: Published date
+            name: date_published
+            widget: datetime
+            date_format: YYYY-MM-DD
+            time_format: false
+            format: YYYY-MM-DD
+          - label: Last updated
+            name: date_modified
+            widget: datetime
+            date_format: YYYY-MM-DD
+            time_format: false
+            format: YYYY-MM-DD
+          - label: Hide from Google
+            name: noindex
+            widget: boolean
+            default: false
+            hint: "On = noindex, left out of the sitemap, and blocked in robots.txt. Leave this off once the page should be found." 
+          - label: Back link label
+            name: back_label
+            widget: string
+          - label: Back link
+            name: back_href
+            widget: string
+          - label: Sections
+            name: sections
+            widget: list
+            summary: "{{heading}}"
+            fields:
+              - label: Heading
+                name: heading
+                widget: string
+              - label: Body
+                name: body
+                widget: markdown
+          - label: Questions and answers
+            name: faqs
+            widget: list
+            summary: "{{question}}"
+            fields:
+              - label: Question
+                name: question
+                widget: string
+              - label: Answer
+                name: answer
+                widget: markdown
+          - label: Related pages
+            name: related
+            widget: list
+            summary: "{{label}}"
+            fields:
+              - label: Label
+                name: label
+                widget: string
+              - label: Link
+                name: href
+                widget: string
+          - label: Sources
+            name: sources
+            widget: list
+            required: false
+            summary: "{{label}}"
+            fields:
+              - label: Label
+                name: label
+                widget: string
+              - label: URL
+                name: url
+                widget: string
+          - label: Disclaimer
+            name: disclaimer
+            widget: text
+          - label: Call-to-action heading
+            name: cta_heading
+            widget: string
+          - label: Call-to-action text
+            name: cta_text
+            widget: text
+          - label: Call-to-action label
+            name: cta_label
+            widget: string
+          - label: Call-to-action link
+            name: cta_link
+            widget: string
+      - name: guide-cost-of-living
+        label: "Guide: Cost of living (draft, noindex)"
+        file: content/pages/guide-cost-of-living.md
+        fields:
+          - label: Page title
+            name: title
+            widget: string
+          - label: Meta description
+            name: description
+            widget: text
+            hint: "Shown to Google, not as the on-page intro."
+          - label: Eyebrow tag
+            name: eyebrow
+            widget: string
+          - label: Hero heading
+            name: hero_heading
+            widget: string
+          - label: Hero intro
+            name: hero_intro
+            widget: text
+          - label: Hero photo
+            name: hero_image
+            widget: image
+            required: false
+            media_folder: "/images"
+            public_folder: "/images"
+            hint: Leave blank to use the site's default cover photo.
+          - label: Hero photo description
+            name: hero_image_alt
+            widget: string
+            required: false
+            hint: "Describe the photo for screen readers."
+          - label: Published date
+            name: date_published
+            widget: datetime
+            date_format: YYYY-MM-DD
+            time_format: false
+            format: YYYY-MM-DD
+          - label: Last updated
+            name: date_modified
+            widget: datetime
+            date_format: YYYY-MM-DD
+            time_format: false
+            format: YYYY-MM-DD
+          - label: Hide from Google
+            name: noindex
+            widget: boolean
+            default: false
+            hint: "On = noindex, left out of the sitemap, and blocked in robots.txt. Leave this off once the page should be found." 
+          - label: Back link label
+            name: back_label
+            widget: string
+          - label: Back link
+            name: back_href
+            widget: string
+          - label: Sections
+            name: sections
+            widget: list
+            summary: "{{heading}}"
+            fields:
+              - label: Heading
+                name: heading
+                widget: string
+              - label: Body
+                name: body
+                widget: markdown
+          - label: Figure groups
+            name: figure_groups
+            widget: list
+            required: false
+            summary: "{{heading}}"
+            hint: "Leave a figure blank to keep the placeholder. Do not guess a number."
+            fields:
+              - label: Heading
+                name: heading
+                widget: string
+              - label: Intro
+                name: intro
+                widget: text
+                required: false
+              - label: Rows
+                name: rows
+                widget: list
+                summary: "{{label}}"
+                fields:
+                  - label: What Nathalie must fill
+                    name: label
+                    widget: string
+                  - label: Figure
+                    name: value
+                    widget: string
+                    required: false
+                    hint: Leave blank until you have checked the figure.
+          - label: Draft notice
+            name: draft_notice
+            widget: text
+            required: false
+            hint: "Shown on the page while Hide from Google is on." 
+          - label: Questions and answers
+            name: faqs
+            widget: list
+            summary: "{{question}}"
+            fields:
+              - label: Question
+                name: question
+                widget: string
+              - label: Answer
+                name: answer
+                widget: markdown
+          - label: Related pages
+            name: related
+            widget: list
+            summary: "{{label}}"
+            fields:
+              - label: Label
+                name: label
+                widget: string
+              - label: Link
+                name: href
+                widget: string
+          - label: Sources
+            name: sources
+            widget: list
+            required: false
+            summary: "{{label}}"
+            fields:
+              - label: Label
+                name: label
+                widget: string
+              - label: URL
+                name: url
+                widget: string
+          - label: Disclaimer
+            name: disclaimer
+            widget: text
+          - label: Call-to-action heading
+            name: cta_heading
+            widget: string
+          - label: Call-to-action text
+            name: cta_text
+            widget: text
+          - label: Call-to-action label
+            name: cta_label
+            widget: string
+          - label: Call-to-action link
+            name: cta_link
+            widget: string
+      - name: guide-retiring-on-the-french-riviera
+        label: "Guide: Retiring on the French Riviera"
+        file: content/pages/guide-retiring-on-the-french-riviera.md
+        fields:
+          - label: Page title
+            name: title
+            widget: string
+          - label: Meta description
+            name: description
+            widget: text
+            hint: "Shown to Google, not as the on-page intro."
+          - label: Eyebrow tag
+            name: eyebrow
+            widget: string
+          - label: Hero heading
+            name: hero_heading
+            widget: string
+          - label: Hero intro
+            name: hero_intro
+            widget: text
+          - label: Hero photo
+            name: hero_image
+            widget: image
+            required: false
+            media_folder: "/images"
+            public_folder: "/images"
+            hint: Leave blank to use the site's default cover photo.
+          - label: Hero photo description
+            name: hero_image_alt
+            widget: string
+            required: false
+            hint: "Describe the photo for screen readers."
+          - label: Published date
+            name: date_published
+            widget: datetime
+            date_format: YYYY-MM-DD
+            time_format: false
+            format: YYYY-MM-DD
+          - label: Last updated
+            name: date_modified
+            widget: datetime
+            date_format: YYYY-MM-DD
+            time_format: false
+            format: YYYY-MM-DD
+          - label: Hide from Google
+            name: noindex
+            widget: boolean
+            default: false
+            hint: "On = noindex, left out of the sitemap, and blocked in robots.txt. Leave this off once the page should be found." 
+          - label: Back link label
+            name: back_label
+            widget: string
+          - label: Back link
+            name: back_href
+            widget: string
+          - label: Sections
+            name: sections
+            widget: list
+            summary: "{{heading}}"
+            fields:
+              - label: Heading
+                name: heading
+                widget: string
+              - label: Body
+                name: body
+                widget: markdown
+          - label: Questions and answers
+            name: faqs
+            widget: list
+            summary: "{{question}}"
+            fields:
+              - label: Question
+                name: question
+                widget: string
+              - label: Answer
+                name: answer
+                widget: markdown
+          - label: Related pages
+            name: related
+            widget: list
+            summary: "{{label}}"
+            fields:
+              - label: Label
+                name: label
+                widget: string
+              - label: Link
+                name: href
+                widget: string
+          - label: Sources
+            name: sources
+            widget: list
+            required: false
+            summary: "{{label}}"
+            fields:
+              - label: Label
+                name: label
+                widget: string
+              - label: URL
+                name: url
+                widget: string
+          - label: Disclaimer
+            name: disclaimer
+            widget: text
+          - label: Call-to-action heading
+            name: cta_heading
+            widget: string
+          - label: Call-to-action text
+            name: cta_text
+            widget: text
+          - label: Call-to-action label
+            name: cta_label
+            widget: string
+          - label: Call-to-action link
+            name: cta_link
+            widget: string
+      - name: guide-renting-an-apartment-in-nice
+        label: "Guide: Renting as a foreigner"
+        file: content/pages/guide-renting-an-apartment-in-nice.md
+        fields:
+          - label: Page title
+            name: title
+            widget: string
+          - label: Meta description
+            name: description
+            widget: text
+            hint: "Shown to Google, not as the on-page intro."
+          - label: Eyebrow tag
+            name: eyebrow
+            widget: string
+          - label: Hero heading
+            name: hero_heading
+            widget: string
+          - label: Hero intro
+            name: hero_intro
+            widget: text
+          - label: Hero photo
+            name: hero_image
+            widget: image
+            required: false
+            media_folder: "/images"
+            public_folder: "/images"
+            hint: Leave blank to use the site's default cover photo.
+          - label: Hero photo description
+            name: hero_image_alt
+            widget: string
+            required: false
+            hint: "Describe the photo for screen readers."
+          - label: Published date
+            name: date_published
+            widget: datetime
+            date_format: YYYY-MM-DD
+            time_format: false
+            format: YYYY-MM-DD
+          - label: Last updated
+            name: date_modified
+            widget: datetime
+            date_format: YYYY-MM-DD
+            time_format: false
+            format: YYYY-MM-DD
+          - label: Hide from Google
+            name: noindex
+            widget: boolean
+            default: false
+            hint: "On = noindex, left out of the sitemap, and blocked in robots.txt. Leave this off once the page should be found." 
+          - label: Back link label
+            name: back_label
+            widget: string
+          - label: Back link
+            name: back_href
+            widget: string
+          - label: Sections
+            name: sections
+            widget: list
+            summary: "{{heading}}"
+            fields:
+              - label: Heading
+                name: heading
+                widget: string
+              - label: Body
+                name: body
+                widget: markdown
+          - label: Questions and answers
+            name: faqs
+            widget: list
+            summary: "{{question}}"
+            fields:
+              - label: Question
+                name: question
+                widget: string
+              - label: Answer
+                name: answer
+                widget: markdown
+          - label: Related pages
+            name: related
+            widget: list
+            summary: "{{label}}"
+            fields:
+              - label: Label
+                name: label
+                widget: string
+              - label: Link
+                name: href
+                widget: string
+          - label: Sources
+            name: sources
+            widget: list
+            required: false
+            summary: "{{label}}"
+            fields:
+              - label: Label
+                name: label
+                widget: string
+              - label: URL
+                name: url
+                widget: string
+          - label: Disclaimer
+            name: disclaimer
+            widget: text
+          - label: Call-to-action heading
+            name: cta_heading
+            widget: string
+          - label: Call-to-action text
+            name: cta_text
+            widget: text
+          - label: Call-to-action label
+            name: cta_label
+            widget: string
+          - label: Call-to-action link
+            name: cta_link
+            widget: string
+      - name: guide-international-schools
+        label: "Guide: International schools"
+        file: content/pages/guide-international-schools.md
+        fields:
+          - label: Page title
+            name: title
+            widget: string
+          - label: Meta description
+            name: description
+            widget: text
+            hint: "Shown to Google, not as the on-page intro."
+          - label: Eyebrow tag
+            name: eyebrow
+            widget: string
+          - label: Hero heading
+            name: hero_heading
+            widget: string
+          - label: Hero intro
+            name: hero_intro
+            widget: text
+          - label: Hero photo
+            name: hero_image
+            widget: image
+            required: false
+            media_folder: "/images"
+            public_folder: "/images"
+            hint: Leave blank to use the site's default cover photo.
+          - label: Hero photo description
+            name: hero_image_alt
+            widget: string
+            required: false
+            hint: "Describe the photo for screen readers."
+          - label: Published date
+            name: date_published
+            widget: datetime
+            date_format: YYYY-MM-DD
+            time_format: false
+            format: YYYY-MM-DD
+          - label: Last updated
+            name: date_modified
+            widget: datetime
+            date_format: YYYY-MM-DD
+            time_format: false
+            format: YYYY-MM-DD
+          - label: Hide from Google
+            name: noindex
+            widget: boolean
+            default: false
+            hint: "On = noindex, left out of the sitemap, and blocked in robots.txt. Leave this off once the page should be found." 
+          - label: Back link label
+            name: back_label
+            widget: string
+          - label: Back link
+            name: back_href
+            widget: string
+          - label: Sections
+            name: sections
+            widget: list
+            summary: "{{heading}}"
+            fields:
+              - label: Heading
+                name: heading
+                widget: string
+              - label: Body
+                name: body
+                widget: markdown
+          - label: Questions and answers
+            name: faqs
+            widget: list
+            summary: "{{question}}"
+            fields:
+              - label: Question
+                name: question
+                widget: string
+              - label: Answer
+                name: answer
+                widget: markdown
+          - label: Related pages
+            name: related
+            widget: list
+            summary: "{{label}}"
+            fields:
+              - label: Label
+                name: label
+                widget: string
+              - label: Link
+                name: href
+                widget: string
+          - label: Sources
+            name: sources
+            widget: list
+            required: false
+            summary: "{{label}}"
+            fields:
+              - label: Label
+                name: label
+                widget: string
+              - label: URL
+                name: url
+                widget: string
+          - label: Disclaimer
+            name: disclaimer
+            widget: text
+          - label: Call-to-action heading
+            name: cta_heading
+            widget: string
+          - label: Call-to-action text
             name: cta_text
             widget: text
           - label: Call-to-action label

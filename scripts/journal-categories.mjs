@@ -35,8 +35,8 @@ export const DEFAULT_CATEGORY = 'Riviera Lifestyle';
 
 export const RELATED_BY_CATEGORY = {
   'Moving to the Riviera': [
-    { href: '/settling-in.html', title: 'Settling in' },
-    { href: '/finding-a-home.html', title: "I'll find your place" }
+    { href: '/guide-moving-to-the-french-riviera.html', title: 'Moving from the US & Canada' },
+    { href: '/settling-in.html', title: 'Settling in' }
   ],
   'Life as a Newcomer': [
     { href: '/settling-in.html', title: 'Settling in' },
@@ -55,8 +55,8 @@ export const RELATED_BY_CATEGORY = {
     { href: '/finding-a-home.html', title: "I'll find your place" }
   ],
   'Housing & Neighborhoods': [
-    { href: '/finding-a-home.html', title: "I'll find your place" },
-    { href: '/neighborhoods.html', title: 'Neighborhoods' }
+    { href: '/guide-renting-an-apartment-in-nice.html', title: 'Renting as a foreigner' },
+    { href: '/finding-a-home.html', title: "I'll find your place" }
   ],
   'Culture & Community': [
     { href: '/guide-french.html', title: 'Learning French' },
@@ -87,12 +87,12 @@ export const RELATED_BY_CATEGORY = {
     { href: '/settling-in.html', title: 'Settling in' }
   ],
   'Cost of Living': [
-    { href: '/settling-in.html', title: 'Settling in' },
+    { href: '/guide-moving-to-the-french-riviera.html', title: 'Moving from the US & Canada' },
     { href: '/finding-a-home.html', title: "I'll find your place" }
   ],
   'Family & Education': [
-    { href: '/neighborhoods.html', title: 'Neighborhoods' },
-    { href: '/settling-in.html', title: 'Settling in' }
+    { href: '/guide-international-schools.html', title: 'International schools' },
+    { href: '/neighborhoods.html', title: 'Neighborhoods' }
   ],
   Healthcare: [
     { href: '/guide-healthcare.html', title: 'Healthcare' },

@@ -36,6 +36,26 @@ guides:
     image: images/town-cannes.jpg
     imageAlt: "Cannes seafront"
     link: guide-businesses.html
+  - heading: "Moving from the US & Canada"
+    description: "The order of a real move, from the visa to the first month."
+    image: images/hero-coast.jpg
+    imageAlt: "The coast near Nice"
+    link: guide-moving-to-the-french-riviera.html
+  - heading: "Retiring here"
+    description: "The visitor card, health cover, and the first year."
+    image: images/town-menton.jpg
+    imageAlt: "Menton"
+    link: guide-retiring-on-the-french-riviera.html
+  - heading: "Renting as a foreigner"
+    description: "The dossier, a guarantor, and Visale."
+    image: images/rental-nice.jpg
+    imageAlt: "An apartment interior in Nice"
+    link: guide-renting-an-apartment-in-nice.html
+  - heading: "International schools"
+    description: "Schools checked on each school's own website."
+    image: images/town-antibes.jpg
+    imageAlt: "Antibes harbour"
+    link: guide-international-schools.html
 cta_heading: "Stuck on something specific?"
 cta_text: "Send Nathalie your question — the answer usually becomes a guide."
 cta_label: "Ask Nathalie"

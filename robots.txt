@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /guide-cost-of-living.html
 
 Sitemap: https://www.rivieraarrival.com/sitemap.xml

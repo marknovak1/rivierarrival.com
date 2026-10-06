@@ -117,7 +117,7 @@ function pageFooter() {
 // redundant Google Fonts link; settling-in/neighborhoods' .stub-grid media
 // queries) so each page still comes out byte-identical to its hand-written
 // original.
-function pageShell({ activeNav, title, description, fontLinks = '', extraStyles = '', body }) {
+function pageShell({ activeNav, title, description, fontLinks = '', extraStyles = '', extraHead = '', body }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,7 +125,7 @@ function pageShell({ activeNav, title, description, fontLinks = '', extraStyles 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)} &mdash; Riviera Arrival</title>
 <meta name="description" content="${escapeHtml(description)}">
-${fontLinks}<link rel="stylesheet" href="styles.css">
+${extraHead}${fontLinks}<link rel="stylesheet" href="styles.css">
 <style>
   body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); }
   a { color: var(--color-accent-700); text-decoration: none; }
@@ -299,7 +299,290 @@ function buildPage(slug, render) {
   writeFileSync(join(ROOT, `${slug}.html`), render(data));
 }
 
+const SITE = 'https://www.rivieraarrival.com';
+
+const GUIDE_STYLES = `  .guide-body p { font-size: 18px; line-height: 1.6; margin: 14px 0 0; color: color-mix(in srgb, var(--color-text) 80%, transparent); }
+  .guide-body ul, .guide-body ol { margin: 14px 0 0; padding-left: 1.25em; font-size: 18px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 80%, transparent); }
+  .guide-body li { margin: 0.35em 0; }
+  .guide-body a { text-decoration: underline; text-underline-offset: 3px; }
+  .figure-wrap { overflow-x: auto; margin-top: 8px; }
+  .figure-table { width: 100%; border-collapse: collapse; }
+  .figure-table th, .figure-table td { text-align: left; vertical-align: top; padding: 12px 8px; border-bottom: 1px solid var(--color-divider); font-size: 16px; line-height: 1.45; }
+  .figure-table th { font-family: var(--font-heading); font-size: 18px; font-weight: 600; }
+  .figure-placeholder { font-style: italic; color: var(--color-accent-700); }
+  .faq-list { margin: 8px 0 0; }
+  .faq-list h3 { font-family: var(--font-heading); font-size: 24px; margin: 28px 0 0; letter-spacing: -0.01em; }
+`;
+
+function isoDate(value) {
+  if (!value) return '';
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    const y = value.getUTCFullYear();
+    const m = String(value.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(value.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  const match = String(value).trim().match(/^(\d{4}-\d{2}-\d{2})/);
+  return match ? match[1] : '';
+}
+
+function formatLongDate(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC'
+  }).format(new Date(Date.UTC(y, m - 1, d)));
+}
+
+function guideHtml(markdown) {
+  return marked.parse(String(markdown || '')).replace(/&#39;/g, "'");
+}
+
+function plainText(markdown) {
+  return guideHtml(markdown)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function jsonScript(value) {
+  const json = JSON.stringify(value).replace(/</g, '\\u003c');
+  return `<script type="application/ld+json">${json}</script>`;
+}
+
+function isHiddenFromGoogle(data) {
+  return data.noindex === true || data.noindex === 'true';
+}
+
+function absoluteAsset(path) {
+  const value = pageImage(path);
+  if (/^https?:\/\//i.test(value)) return value;
+  return `${SITE}/${value}`;
+}
+
+function renderFigureGroups(groups) {
+  if (!Array.isArray(groups) || !groups.length) return '';
+  return groups
+    .map((group) => {
+      const rows = (group.rows || [])
+        .map((row) => {
+          const label = String(row.label || '').trim();
+          const value = String(row.value || '').trim();
+          const shown = value
+            ? escapeHtml(value)
+            : `<span class="figure-placeholder">[Nathalie to fill: ${escapeHtml(label)}]</span>`;
+          return `<tr>
+          <td>${escapeHtml(label)}</td>
+          <td>${shown}</td>
+        </tr>`;
+        })
+        .join('\n        ');
+      const intro = String(group.intro || '').trim();
+      const introHtml = intro ? `<p style="font-size: 17px; line-height: 1.55; margin: 10px 0 0; color: color-mix(in srgb, var(--color-text) 70%, transparent)">${inline(intro)}</p>` : '';
+      return `<h2 style="font-family: var(--font-heading); font-size: 32px; margin: 40px 0 0; letter-spacing: -0.01em">${escapeHtml(group.heading)}</h2>
+      ${introHtml}
+      <div class="figure-wrap">
+      <table class="figure-table">
+        <thead>
+          <tr><th>Item</th><th>Figure</th></tr>
+        </thead>
+        <tbody>
+        ${rows}
+        </tbody>
+      </table>
+      </div>`;
+    })
+    .join('\n\n      ');
+}
+
+function renderGuideSections(sections) {
+  if (!Array.isArray(sections)) return '';
+  return sections
+    .map((section) => `<h2 style="font-family: var(--font-heading); font-size: 32px; margin: 40px 0 0; letter-spacing: -0.01em">${escapeHtml(section.heading)}</h2>
+      <div class="guide-body">
+      ${guideHtml(section.body)}
+      </div>`)
+    .join('\n\n      ');
+}
+
+function renderFaqs(faqs) {
+  if (!Array.isArray(faqs) || !faqs.length) return '';
+  const items = faqs
+    .map((faq) => `<h3>${escapeHtml(faq.question)}</h3>
+        <div class="guide-body">
+        ${guideHtml(faq.answer)}
+        </div>`)
+    .join('\n        ');
+  return `<h2 style="font-family: var(--font-heading); font-size: 32px; margin: 48px 0 0; letter-spacing: -0.01em">Questions I get asked</h2>
+      <div class="faq-list">
+        ${items}
+      </div>`;
+}
+
+function renderRelated(related) {
+  if (!Array.isArray(related) || !related.length) return '';
+  const links = related
+    .map((item) => `<li><a href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a></li>`)
+    .join('\n          ');
+  return `<h2 style="font-family: var(--font-heading); font-size: 32px; margin: 48px 0 0; letter-spacing: -0.01em">Keep going</h2>
+      <ul style="margin: 16px 0 0; padding-left: 1.25em; font-size: 18px; line-height: 1.7">
+          ${links}
+      </ul>`;
+}
+
+function renderSources(sources) {
+  if (!Array.isArray(sources) || !sources.length) return '';
+  const links = sources
+    .map((item) => `<li><a href="${escapeHtml(item.url)}">${escapeHtml(item.label)}</a></li>`)
+    .join('\n          ');
+  return `<h2 style="font-family: var(--font-heading); font-size: 32px; margin: 48px 0 0; letter-spacing: -0.01em">Where I checked</h2>
+      <ul style="margin: 16px 0 0; padding-left: 1.25em; font-size: 16px; line-height: 1.7">
+          ${links}
+      </ul>`;
+}
+
+function articleJsonLd(data, canonical, image) {
+  const published = isoDate(data.date_published);
+  const modified = isoDate(data.date_modified) || published;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: data.hero_heading || data.title,
+    description: data.description,
+    datePublished: published,
+    dateModified: modified,
+    image,
+    author: {
+      '@type': 'Person',
+      name: 'Nathalie',
+      url: `${SITE}/about.html`
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Riviera Arrival',
+      url: `${SITE}/`
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonical
+    },
+    url: canonical
+  };
+}
+
+function faqJsonLd(faqs) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: (faqs || []).map((faq) => ({
+      '@type': 'Question',
+      name: String(faq.question || ''),
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: plainText(faq.answer)
+      }
+    }))
+  };
+}
+
+function renderGuide(slug) {
+  return function render(data) {
+    const canonical = `${SITE}/${slug}.html`;
+    const hidden = isHiddenFromGoogle(data);
+    const published = isoDate(data.date_published);
+    const modified = isoDate(data.date_modified) || published;
+    const heroImage = pageImage(data.hero_image);
+    const heroAlt = text(data.hero_image_alt || data.hero_heading);
+    const image = absoluteAsset(data.hero_image);
+    const robots = hidden ? `<meta name="robots" content="noindex, follow">\n` : '';
+    const extraHead = `${robots}<link rel="canonical" href="${escapeHtml(canonical)}">
+<meta property="og:image" content="${escapeHtml(image)}">
+${jsonScript(articleJsonLd(data, canonical, image))}
+${jsonScript(faqJsonLd(data.faqs))}
+`;
+    const updated = modified ? `<p style="font-size: 14px; margin: 18px 0 0; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Updated ${escapeHtml(formatLongDate(modified))}</p>` : '';
+    const draft = hidden
+      ? `<div class="draft-banner" style="background: var(--color-accent-2-200); border-radius: var(--radius-lg); padding: 22px 26px; margin-top: 28px; max-width: 46em">
+      <p style="margin: 0; font-size: 16px; line-height: 1.55; color: var(--color-accent-2-900)">${inline(data.draft_notice || 'This page is hidden from Google until it is finished.')}</p>
+    </div>`
+      : '';
+    const disclaimer = String(data.disclaimer || '').trim();
+    const disclaimerHtml = disclaimer
+      ? `<div class="hr" style="margin: 40px 0 0"></div>
+      <p style="font-size: 14px; font-style: italic; margin: 20px 0 0; color: color-mix(in srgb, var(--color-text) 55%, transparent)">${inline(disclaimer)}</p>`
+      : '';
+
+    const body = `<section style="max-width: 1320px; margin: 0 auto; padding: 40px 48px 0">
+    <a href="${escapeHtml(data.back_href || 'settling-in.html')}" style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">&larr; ${escapeHtml(data.back_label || 'All guides')}</a>
+    <div style="margin-top: 14px">
+      <span class="tag tag-accent-2" style="border-radius: 999px">${escapeHtml(data.eyebrow)}</span>
+    </div>
+    <h1 style="font-family: var(--font-heading); font-size: 60px; line-height: 1.03; letter-spacing: -0.02em; margin: 20px 0 0; max-width: 15em; text-wrap: pretty">${escapeHtml(data.hero_heading)}</h1>
+    <p style="font-size: 19px; line-height: 1.55; max-width: 40em; margin: 22px 0 0; color: color-mix(in srgb, var(--color-text) 78%, transparent); text-wrap: pretty">${inline(data.hero_intro)}</p>
+    ${updated}
+    ${draft}
+  </section>
+
+  <section style="max-width: 1320px; margin: 40px auto 0; padding: 0 48px">
+    <div style="height: 340px; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md)"><img src="${escapeHtml(heroImage)}" alt="${heroAlt}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy"></div>
+  </section>
+
+  <section style="max-width: 1320px; margin: 56px auto 0; padding: 0 48px">
+    <div style="max-width: 46em">
+      ${renderGuideSections(data.sections)}
+
+      ${renderFigureGroups(data.figure_groups)}
+
+      ${renderFaqs(data.faqs)}
+
+      ${renderRelated(data.related)}
+
+      ${renderSources(data.sources)}
+
+      ${disclaimerHtml}
+    </div>
+  </section>
+
+  <section style="max-width: 1320px; margin: 80px auto 0; padding: 0 48px">
+    <div style="background: var(--color-accent-2-200); border-radius: var(--radius-lg); padding: 44px 48px; display: flex; align-items: center; gap: 40px; flex-wrap: wrap">
+      <div style="flex: 1; min-width: 280px">
+        <h2 style="font-family: var(--font-heading); font-size: 32px; margin: 0; letter-spacing: -0.01em; color: var(--color-accent-2-900)">${escapeHtml(data.cta_heading)}</h2>
+        <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; color: var(--color-accent-2-900); text-wrap: pretty">${inline(data.cta_text)}</p>
+      </div>
+      <a href="${escapeHtml(data.cta_link || 'contact.html')}" class="btn btn-primary" style="border-radius: 999px; padding: 13px 26px">${escapeHtml(data.cta_label || 'Talk to Nathalie')}</a>
+    </div>
+  </section>`;
+
+    return pageShell({
+      activeNav: 'settling-in',
+      title: data.title,
+      description: data.description,
+      extraStyles: GUIDE_STYLES,
+      extraHead,
+      body
+    });
+  };
+}
+
+const GUIDE_SLUGS = [
+  'guide-moving-to-the-french-riviera',
+  'guide-cost-of-living',
+  'guide-retiring-on-the-french-riviera',
+  'guide-renting-an-apartment-in-nice',
+  'guide-international-schools'
+];
+
 buildPage('finding-a-home', renderFindingAHome);
 buildPage('settling-in', renderSettlingIn);
 buildPage('neighborhoods', renderNeighborhoods);
-console.log('Pages build: finding-a-home.html, settling-in.html, neighborhoods.html generated from content/pages/*.md');
+for (const slug of GUIDE_SLUGS) {
+  buildPage(slug, renderGuide(slug));
+}
+console.log(`Pages build: finding-a-home.html, settling-in.html, neighborhoods.html, ${GUIDE_SLUGS.map((slug) => `${slug}.html`).join(', ')}`);

@@ -315,14 +315,30 @@ export function renderHub(posts) {
   });
 }
 
+function isNoindexPage(html) {
+  return /<meta\s+name="robots"\s+content="[^"]*\bnoindex\b/i.test(html);
+}
+
+function writeRobots(noindexPages) {
+  const disallow = ['Disallow: /admin/', ...noindexPages.map((page) => `Disallow: /${page}`)];
+  const body = `User-agent: *\nAllow: /\n${disallow.join('\n')}\n\nSitemap: ${SITE}/sitemap.xml\n`;
+  writeFileSync(join(ROOT, 'robots.txt'), body);
+}
+
 function writeSitemap(posts) {
   const rootPages = readdirSync(ROOT)
     .filter((name) => name.endsWith('.html') && !name.startsWith('_') && name !== 'journal.html')
     .sort();
 
+  const noindex = [];
   const urls = [`${SITE}/`];
   for (const page of rootPages) {
     if (page === 'index.html') continue;
+    const html = readFileSync(join(ROOT, page), 'utf8');
+    if (isNoindexPage(html)) {
+      noindex.push(page);
+      continue;
+    }
     urls.push(`${SITE}/${page}`);
   }
   urls.push(`${SITE}/journal/`);
@@ -336,6 +352,7 @@ ${urls.map((loc) => `  <url>\n    <loc>${loc}</loc>\n  </url>`).join('\n')}
 </urlset>
 `;
   writeFileSync(join(ROOT, 'sitemap.xml'), xml);
+  writeRobots(noindex);
 }
 
 function resetOutDir() {
