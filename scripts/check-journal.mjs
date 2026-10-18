@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { CATEGORIES, CATEGORY_ALIASES, canonicalCategory } from './journal-categories.mjs';
 import { DEFAULT_COVER, loadPosts, renderHub, renderPost } from './build-journal.mjs';
+import { mergeHelpfulGuides } from './build-pages.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const FIXTURES_DIR = join(ROOT, 'test', 'fixtures', 'journal');
@@ -318,6 +319,7 @@ if (config) {
     if (!config.includes(file)) fail(`CMS config is missing ${file}`);
   }
   if (!config.includes('name: home_cta')) fail('CMS config is missing the guide home-finding line');
+  if (!config.includes('name: helpful_guides')) fail('CMS config is missing helpful guides on finding-a-home');
 }
 
 function decodeEntities(value) {
@@ -407,6 +409,32 @@ if (homepage && !homepage.includes('"@type":"Organization"')) fail('Homepage is 
 if (homepage && !homepage.includes('"@type":"Service"')) fail('Homepage is missing Service JSON-LD');
 const findingHtml = findingAHome || read('finding-a-home.html');
 if (findingHtml && !findingHtml.includes('"@type":"Service"')) fail('finding-a-home.html is missing Service JSON-LD');
+const REQUIRED_HOME_GUIDES = [
+  'guide-exchanging-a-driving-licence.html',
+  'guide-buying-or-renting-on-the-french-riviera.html',
+  'guide-carte-de-sejour.html'
+];
+if (findingHtml && !findingHtml.includes('Helpful guides')) {
+  fail('finding-a-home.html is missing the Helpful guides block');
+}
+for (const href of REQUIRED_HOME_GUIDES) {
+  if (findingHtml && !findingHtml.includes(`href="${href}"`)) {
+    fail(`finding-a-home.html is missing a link to ${href}`);
+  }
+}
+const droppedGuides = mergeHelpfulGuides([{ label: 'Visas and paperwork', href: 'guide-visas.html' }]);
+for (const href of REQUIRED_HOME_GUIDES) {
+  if (!droppedGuides.some((item) => item.href === href)) fail(`helpful guides merge dropped ${href}`);
+}
+if (droppedGuides[0]?.href !== 'guide-visas.html') fail('helpful guides merge should keep an editor link ahead of the defaults');
+const emptied = mergeHelpfulGuides([]);
+if (emptied.map((item) => item.href).join('|') !== REQUIRED_HOME_GUIDES.join('|')) {
+  fail('an empty helpful guides list should fall back to the three settling-in guides');
+}
+const renamed = mergeHelpfulGuides([
+  { label: 'Licence exchange', href: 'guide-exchanging-a-driving-licence.html' }
+]);
+if (renamed[0]?.label !== 'Licence exchange') fail('helpful guides merge should keep an edited label');
 const apartment = read('service-apartment-search.html');
 if (apartment && !apartment.includes('"@type":"Service"')) fail('service-apartment-search.html is missing Service JSON-LD');
 for (const page of ['journal/index.html', 'journal/knife-sharpener-liberation-market.html']) {

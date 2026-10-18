@@ -221,6 +221,43 @@ function renderSections(sections) {
     .join('\n\n      ');
 }
 
+// These three stay on the page even when a Decap save clears or shortens the list.
+const DEFAULT_HELPFUL_GUIDES = [
+  { label: 'Exchanging a foreign driving licence', href: 'guide-exchanging-a-driving-licence.html' },
+  { label: 'Buying or renting on the Riviera', href: 'guide-buying-or-renting-on-the-french-riviera.html' },
+  { label: 'The carte de séjour', href: 'guide-carte-de-sejour.html' }
+];
+
+export function mergeHelpfulGuides(items) {
+  const provided = Array.isArray(items) ? items : [];
+  const seen = new Set();
+  const merged = [];
+  for (const item of provided) {
+    const href = String(item?.href || '').trim();
+    const label = String(item?.label || '').trim();
+    if (!href || !label || seen.has(href)) continue;
+    seen.add(href);
+    merged.push({ label, href });
+  }
+  for (const fallback of DEFAULT_HELPFUL_GUIDES) {
+    if (seen.has(fallback.href)) continue;
+    seen.add(fallback.href);
+    merged.push({ label: fallback.label, href: fallback.href });
+  }
+  return merged;
+}
+
+function renderHelpfulGuides(data) {
+  const heading = String(data.helpful_guides_heading || '').trim() || 'Helpful guides';
+  const links = mergeHelpfulGuides(data.helpful_guides)
+    .map((item) => `<li><a href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a></li>`)
+    .join('\n          ');
+  return `<h2 style="font-family: var(--font-heading); font-size: 32px; margin: 48px 0 0; letter-spacing: -0.01em">${escapeHtml(heading)}</h2>
+      <ul style="margin: 16px 0 0; padding-left: 1.25em; font-size: 18px; line-height: 1.7">
+          ${links}
+      </ul>`;
+}
+
 function renderFindingAHome(data) {
   const ctaLabel = escapeHtml(data.cta_label);
   const ctaLink = escapeHtml(data.cta_link);
@@ -235,6 +272,8 @@ function renderFindingAHome(data) {
   <section style="max-width: 1320px; margin: 56px auto 0; padding: 0 48px">
     <div style="max-width: 46em">
       ${renderSections(data.sections)}
+
+      ${renderHelpfulGuides(data)}
 
       <p style="${LOOSE_PARAGRAPH_STYLE}">${inline(data.service_link_text)}</p>
 
@@ -672,10 +711,16 @@ const GUIDE_SLUGS = [
   'guide-carte-de-sejour'
 ];
 
-buildPage('finding-a-home', renderFindingAHome);
-buildPage('settling-in', renderSettlingIn);
-buildPage('neighborhoods', renderNeighborhoods);
-for (const slug of GUIDE_SLUGS) {
-  buildPage(slug, renderGuide(slug));
+function main() {
+  buildPage('finding-a-home', renderFindingAHome);
+  buildPage('settling-in', renderSettlingIn);
+  buildPage('neighborhoods', renderNeighborhoods);
+  for (const slug of GUIDE_SLUGS) {
+    buildPage(slug, renderGuide(slug));
+  }
+  console.log(`Pages build: finding-a-home.html, settling-in.html, neighborhoods.html, ${GUIDE_SLUGS.map((slug) => `${slug}.html`).join(', ')}`);
 }
-console.log(`Pages build: finding-a-home.html, settling-in.html, neighborhoods.html, ${GUIDE_SLUGS.map((slug) => `${slug}.html`).join(', ')}`);
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main();
+}
