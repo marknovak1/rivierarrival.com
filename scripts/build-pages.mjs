@@ -3,9 +3,69 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { marked } from 'marked';
-import { DEFAULT_COVER, escapeHtml, siteScripts } from './site-layout.mjs';
+import { DEFAULT_COVER, breadcrumbList, escapeHtml, jsonLdScript, siteScripts } from './site-layout.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+const SITE = 'https://www.rivieraarrival.com';
+const TITLE_MAX = 60;
+const BRAND_SUFFIX = ' — Riviera Arrival';
+
+// Browser titles stay within 60 characters. A short page title keeps the
+// brand suffix; a title that would overflow is used on its own.
+function documentTitle(title) {
+  const base = String(title || '').trim();
+  if (!base) return 'Riviera Arrival';
+  if (base.includes('Riviera Arrival')) return base;
+  const withBrand = `${base}${BRAND_SUFFIX}`;
+  return withBrand.length <= TITLE_MAX ? withBrand : base;
+}
+
+function socialTitleTags(title) {
+  const safe = escapeHtml(title);
+  return `<meta property="og:title" content="${safe}">
+<meta name="twitter:title" content="${safe}">
+`;
+}
+
+const AREA_SERVED = ['Nice', 'Antibes', 'Cannes', 'Menton'].map((name) => ({
+  '@type': 'City',
+  name
+}));
+
+const ORG_DESCRIPTION = 'Guided by Nathalie: practical help to settle in Nice, Antibes, Cannes and Menton, from the home search through the first months.';
+
+function organizationNode() {
+  return {
+    '@type': 'Organization',
+    '@id': `${SITE}/#organization`,
+    name: 'Riviera Arrival',
+    url: `${SITE}/`,
+    description: ORG_DESCRIPTION,
+    areaServed: AREA_SERVED
+  };
+}
+
+function serviceNode({ name, description, url }) {
+  return {
+    '@type': 'Service',
+    name,
+    url,
+    description,
+    provider: { '@id': `${SITE}/#organization` },
+    areaServed: AREA_SERVED
+  };
+}
+
+function orgAndServiceScript(service) {
+  return jsonLdScript({
+    '@context': 'https://schema.org',
+    '@graph': [organizationNode(), serviceNode(service)]
+  });
+}
+
+function crumbScript(crumbs) {
+  return jsonLdScript(breadcrumbList(crumbs));
+}
 
 marked.setOptions({ gfm: true, breaks: false });
 
@@ -117,15 +177,17 @@ function pageFooter() {
 // redundant Google Fonts link; settling-in/neighborhoods' .stub-grid media
 // queries) so each page still comes out byte-identical to its hand-written
 // original.
-function pageShell({ activeNav, title, description, fontLinks = '', extraStyles = '', extraHead = '', body }) {
+function pageShell({ activeNav, title, description, canonical = '', fontLinks = '', extraStyles = '', extraHead = '', body }) {
+  const fullTitle = documentTitle(title);
+  const canonicalTag = canonical ? `<link rel="canonical" href="${escapeHtml(canonical)}">\n` : '';
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escapeHtml(title)} &mdash; Riviera Arrival</title>
+<title>${escapeHtml(fullTitle)}</title>
 <meta name="description" content="${escapeHtml(description)}">
-${extraHead}${fontLinks}<link rel="stylesheet" href="styles.css">
+${canonicalTag}${socialTitleTags(fullTitle)}${extraHead}${fontLinks}<link rel="stylesheet" href="styles.css">
 <style>
   body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); }
   a { color: var(--color-accent-700); text-decoration: none; }
@@ -159,6 +221,43 @@ function renderSections(sections) {
     .join('\n\n      ');
 }
 
+// These three stay on the page even when a Decap save clears or shortens the list.
+const DEFAULT_HELPFUL_GUIDES = [
+  { label: 'Exchanging a foreign driving licence', href: 'guide-exchanging-a-driving-licence.html' },
+  { label: 'Buying or renting on the Riviera', href: 'guide-buying-or-renting-on-the-french-riviera.html' },
+  { label: 'The carte de séjour', href: 'guide-carte-de-sejour.html' }
+];
+
+export function mergeHelpfulGuides(items) {
+  const provided = Array.isArray(items) ? items : [];
+  const seen = new Set();
+  const merged = [];
+  for (const item of provided) {
+    const href = String(item?.href || '').trim();
+    const label = String(item?.label || '').trim();
+    if (!href || !label || seen.has(href)) continue;
+    seen.add(href);
+    merged.push({ label, href });
+  }
+  for (const fallback of DEFAULT_HELPFUL_GUIDES) {
+    if (seen.has(fallback.href)) continue;
+    seen.add(fallback.href);
+    merged.push({ label: fallback.label, href: fallback.href });
+  }
+  return merged;
+}
+
+function renderHelpfulGuides(data) {
+  const heading = String(data.helpful_guides_heading || '').trim() || 'Helpful guides';
+  const links = mergeHelpfulGuides(data.helpful_guides)
+    .map((item) => `<li><a href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a></li>`)
+    .join('\n          ');
+  return `<h2 style="font-family: var(--font-heading); font-size: 32px; margin: 48px 0 0; letter-spacing: -0.01em">${escapeHtml(heading)}</h2>
+      <ul style="margin: 16px 0 0; padding-left: 1.25em; font-size: 18px; line-height: 1.7">
+          ${links}
+      </ul>`;
+}
+
 function renderFindingAHome(data) {
   const ctaLabel = escapeHtml(data.cta_label);
   const ctaLink = escapeHtml(data.cta_link);
@@ -174,6 +273,8 @@ function renderFindingAHome(data) {
     <div style="max-width: 46em">
       ${renderSections(data.sections)}
 
+      ${renderHelpfulGuides(data)}
+
       <p style="${LOOSE_PARAGRAPH_STYLE}">${inline(data.service_link_text)}</p>
 
       <p style="${LOOSE_PARAGRAPH_STYLE}">${inline(data.closing_text)}</p>
@@ -181,10 +282,24 @@ function renderFindingAHome(data) {
     </div>
   </section>`;
 
+  const canonical = `${SITE}/finding-a-home.html`;
+  const extraHead = `${orgAndServiceScript({
+    name: 'French Riviera home-finding service',
+    description: data.description,
+    url: canonical
+  })}
+${crumbScript([
+  { name: 'Home', item: `${SITE}/` },
+  { name: "I'll find your place", item: canonical }
+])}
+`;
+
   return pageShell({
     activeNav: 'finding-a-home',
     title: data.title,
     description: data.description,
+    canonical,
+    extraHead,
     fontLinks: `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Lora:ital,wght@0,400;0,500;0,600;0,700&display=swap">
 `,
@@ -232,10 +347,16 @@ function renderSettlingIn(data) {
     </div>
   </section>`;
 
+  const canonical = `${SITE}/settling-in.html`;
   return pageShell({
     activeNav: 'settling-in',
     title: data.title,
     description: data.description,
+    canonical,
+    extraHead: `${crumbScript([
+      { name: 'Home', item: `${SITE}/` },
+      { name: 'Settling in', item: canonical }
+    ])}\n`,
     extraStyles: STUB_GRID_STYLES,
     body
   });
@@ -284,10 +405,16 @@ function renderNeighborhoods(data) {
     </div>
   </section>`;
 
+  const canonical = `${SITE}/neighborhoods.html`;
   return pageShell({
     activeNav: 'neighborhoods',
     title: data.title,
     description: data.description,
+    canonical,
+    extraHead: `${crumbScript([
+      { name: 'Home', item: `${SITE}/` },
+      { name: 'Neighborhoods', item: canonical }
+    ])}\n`,
     extraStyles: STUB_GRID_STYLES,
     body
   });
@@ -298,8 +425,6 @@ function buildPage(slug, render) {
   const { data } = matter(raw);
   writeFileSync(join(ROOT, `${slug}.html`), render(data));
 }
-
-const SITE = 'https://www.rivieraarrival.com';
 
 const GUIDE_STYLES = `  .guide-body p { font-size: 18px; line-height: 1.6; margin: 14px 0 0; color: color-mix(in srgb, var(--color-text) 80%, transparent); }
   .guide-body ul, .guide-body ol { margin: 14px 0 0; padding-left: 1.25em; font-size: 18px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 80%, transparent); }
@@ -350,11 +475,6 @@ function plainText(markdown) {
     .replace(/&gt;/g, '>')
     .replace(/\s+/g, ' ')
     .trim();
-}
-
-function jsonScript(value) {
-  const json = JSON.stringify(value).replace(/</g, '\\u003c');
-  return `<script type="application/ld+json">${json}</script>`;
 }
 
 function isHiddenFromGoogle(data) {
@@ -502,10 +622,14 @@ function renderGuide(slug) {
     const heroAlt = text(data.hero_image_alt || data.hero_heading);
     const image = absoluteAsset(data.hero_image);
     const robots = hidden ? `<meta name="robots" content="noindex, follow">\n` : '';
-    const extraHead = `${robots}<link rel="canonical" href="${escapeHtml(canonical)}">
-<meta property="og:image" content="${escapeHtml(image)}">
-${jsonScript(articleJsonLd(data, canonical, image))}
-${jsonScript(faqJsonLd(data.faqs))}
+    const extraHead = `${robots}<meta property="og:image" content="${escapeHtml(image)}">
+${jsonLdScript(articleJsonLd(data, canonical, image))}
+${jsonLdScript(faqJsonLd(data.faqs))}
+${crumbScript([
+  { name: 'Home', item: `${SITE}/` },
+  { name: 'Settling in', item: `${SITE}/settling-in.html` },
+  { name: data.hero_heading || data.title, item: canonical }
+])}
 `;
     const updated = modified ? `<p style="font-size: 14px; margin: 18px 0 0; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Updated ${escapeHtml(formatLongDate(modified))}</p>` : '';
     const draft = hidden
@@ -518,6 +642,8 @@ ${jsonScript(faqJsonLd(data.faqs))}
       ? `<div class="hr" style="margin: 40px 0 0"></div>
       <p style="font-size: 14px; font-style: italic; margin: 20px 0 0; color: color-mix(in srgb, var(--color-text) 55%, transparent)">${inline(disclaimer)}</p>`
       : '';
+    const homeCta = String(data.home_cta || '').trim()
+      || "If you would rather I looked for the home, start with [I'll find your place](finding-a-home.html).";
 
     const body = `<section style="max-width: 1320px; margin: 0 auto; padding: 40px 48px 0">
     <a href="${escapeHtml(data.back_href || 'settling-in.html')}" style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">&larr; ${escapeHtml(data.back_label || 'All guides')}</a>
@@ -546,6 +672,8 @@ ${jsonScript(faqJsonLd(data.faqs))}
 
       ${renderSources(data.sources)}
 
+      <p style="font-size: 18px; line-height: 1.6; margin: 28px 0 0; color: color-mix(in srgb, var(--color-text) 80%, transparent)">${inline(homeCta)}</p>
+
       ${disclaimerHtml}
     </div>
   </section>
@@ -564,6 +692,7 @@ ${jsonScript(faqJsonLd(data.faqs))}
       activeNav: 'settling-in',
       title: data.title,
       description: data.description,
+      canonical,
       extraStyles: GUIDE_STYLES,
       extraHead,
       body
@@ -582,10 +711,16 @@ const GUIDE_SLUGS = [
   'guide-carte-de-sejour'
 ];
 
-buildPage('finding-a-home', renderFindingAHome);
-buildPage('settling-in', renderSettlingIn);
-buildPage('neighborhoods', renderNeighborhoods);
-for (const slug of GUIDE_SLUGS) {
-  buildPage(slug, renderGuide(slug));
+function main() {
+  buildPage('finding-a-home', renderFindingAHome);
+  buildPage('settling-in', renderSettlingIn);
+  buildPage('neighborhoods', renderNeighborhoods);
+  for (const slug of GUIDE_SLUGS) {
+    buildPage(slug, renderGuide(slug));
+  }
+  console.log(`Pages build: finding-a-home.html, settling-in.html, neighborhoods.html, ${GUIDE_SLUGS.map((slug) => `${slug}.html`).join(', ')}`);
 }
-console.log(`Pages build: finding-a-home.html, settling-in.html, neighborhoods.html, ${GUIDE_SLUGS.map((slug) => `${slug}.html`).join(', ')}`);
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main();
+}

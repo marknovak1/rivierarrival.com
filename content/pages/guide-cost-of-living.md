@@ -113,6 +113,7 @@ faqs:
   - question: "Does this include holiday rentals?"
     answer: |-
       No. The rent rows are for an unfurnished long-term lease. A summer let is a different market, and I am not mixing the two.
+home_cta: "While the figures are still blank, the home search is something I can do now: [I'll find your place](finding-a-home.html)."
 related:
   - label: "Moving to the French Riviera from the US and Canada"
     href: guide-moving-to-the-french-riviera.html

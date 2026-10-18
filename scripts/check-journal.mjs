@@ -1,9 +1,10 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { CATEGORIES, CATEGORY_ALIASES, canonicalCategory } from './journal-categories.mjs';
 import { DEFAULT_COVER, loadPosts, renderHub, renderPost } from './build-journal.mjs';
+import { mergeHelpfulGuides } from './build-pages.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const FIXTURES_DIR = join(ROOT, 'test', 'fixtures', 'journal');
@@ -316,6 +317,131 @@ for (const page of [...INDEXABLE_GUIDES, COST_GUIDE, 'settling-in.html', 'index.
 if (config) {
   for (const file of GUIDE_SOURCES) {
     if (!config.includes(file)) fail(`CMS config is missing ${file}`);
+  }
+  if (!config.includes('name: home_cta')) fail('CMS config is missing the guide home-finding line');
+  if (!config.includes('name: helpful_guides')) fail('CMS config is missing helpful guides on finding-a-home');
+}
+
+function decodeEntities(value) {
+  return value
+    .replace(/&amp;/g, '&')
+    .replace(/&mdash;/g, '—')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
+
+function jsonLdBlocks(html) {
+  const blocks = [];
+  const re = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g;
+  let match;
+  while ((match = re.exec(html))) {
+    try {
+      blocks.push(JSON.parse(match[1]));
+    } catch (error) {
+      blocks.push({ __invalid: error.message, raw: match[1] });
+    }
+  }
+  return blocks;
+}
+
+const GUIDE_LINK_PAGES = [...INDEXABLE_GUIDES, COST_GUIDE];
+for (const page of GUIDE_LINK_PAGES) {
+  const html = read(page);
+  if (html && !html.includes('href="finding-a-home.html"')) {
+    fail(`${page} is missing a link to finding-a-home.html`);
+  }
+}
+const retiringGuide = read('guide-retiring-on-the-french-riviera.html');
+if (retiringGuide && !retiringGuide.includes('guide-visas.html')) fail('Retiring guide should link the visas guide');
+if (retiringGuide && !retiringGuide.includes('guide-carte-de-sejour.html')) fail('Retiring guide should link the carte de séjour guide');
+const schoolsHtml = schoolsGuide || read('guide-international-schools.html');
+if (schoolsHtml && !schoolsHtml.includes('guide-moving-to-the-french-riviera.html')) {
+  fail('Schools guide should link the moving guide');
+}
+const rentingGuide = read('guide-renting-an-apartment-in-nice.html');
+if (rentingGuide && !rentingGuide.includes('guide-buying-or-renting-on-the-french-riviera.html')) {
+  fail('Renting guide should link buying or renting');
+}
+
+const rootPages = readdirSync(ROOT).filter((name) => name.endsWith('.html') && !name.startsWith('_'));
+const allowedNoindex = new Set(['guide-cost-of-living.html']);
+for (const page of rootPages) {
+  const html = read(page);
+  if (!html) continue;
+  const titleMatch = html.match(/<title>([^<]*)<\/title>/);
+  const title = titleMatch ? decodeEntities(titleMatch[1]) : '';
+  if (!title) fail(`${page} is missing a title`);
+  else if (title.length > 60) fail(`${page} title is ${title.length} characters: ${title}`);
+  const descMatch = html.match(/<meta name="description" content="([^"]*)"/);
+  const description = descMatch ? decodeEntities(descMatch[1]) : '';
+  if (!description) fail(`${page} is missing a meta description`);
+  else if (description.length > 155) fail(`${page} description is ${description.length} characters`);
+  const canonicalMatch = html.match(/<link rel="canonical" href="([^"]+)"/);
+  if (!canonicalMatch) fail(`${page} is missing a canonical`);
+  else if (page === 'journal.html') {
+    if (canonicalMatch[1] !== 'https://www.rivieraarrival.com/journal/') fail('journal.html canonical should point at /journal/');
+  } else if (page === 'index.html') {
+    if (canonicalMatch[1] !== 'https://www.rivieraarrival.com/') fail('Homepage canonical is wrong');
+  } else if (canonicalMatch[1] !== `https://www.rivieraarrival.com/${page}`) {
+    fail(`${page} canonical is ${canonicalMatch[1]}`);
+  }
+  const og = html.match(/<meta property="og:title" content="([^"]*)"/);
+  const twitter = html.match(/<meta name="twitter:title" content="([^"]*)"/);
+  if (!og || decodeEntities(og[1]) !== title) fail(`${page} og:title does not match the title`);
+  if (!twitter || decodeEntities(twitter[1]) !== title) fail(`${page} twitter:title does not match the title`);
+  const noindex = /<meta\s+name="robots"\s+content="[^"]*\bnoindex\b/i.test(html);
+  if (noindex && !allowedNoindex.has(page)) fail(`${page} gained noindex`);
+  if (!noindex && allowedNoindex.has(page)) fail(`${page} must stay noindex`);
+  if (page !== 'index.html' && page !== 'journal.html' && !html.includes('"@type":"BreadcrumbList"')) {
+    fail(`${page} is missing BreadcrumbList JSON-LD`);
+  }
+  for (const block of jsonLdBlocks(html)) {
+    if (block.__invalid) fail(`${page} has invalid JSON-LD: ${block.__invalid}`);
+    const serialized = JSON.stringify(block);
+    if (/"@type":"Review"|"@type":"AggregateRating"|aggregateRating/.test(serialized)) {
+      fail(`${page} JSON-LD includes a rating or review`);
+    }
+  }
+}
+if (homepage && !homepage.includes('"@type":"Organization"')) fail('Homepage is missing Organization JSON-LD');
+if (homepage && !homepage.includes('"@type":"Service"')) fail('Homepage is missing Service JSON-LD');
+const findingHtml = findingAHome || read('finding-a-home.html');
+if (findingHtml && !findingHtml.includes('"@type":"Service"')) fail('finding-a-home.html is missing Service JSON-LD');
+const REQUIRED_HOME_GUIDES = [
+  'guide-exchanging-a-driving-licence.html',
+  'guide-buying-or-renting-on-the-french-riviera.html',
+  'guide-carte-de-sejour.html'
+];
+if (findingHtml && !findingHtml.includes('Helpful guides')) {
+  fail('finding-a-home.html is missing the Helpful guides block');
+}
+for (const href of REQUIRED_HOME_GUIDES) {
+  if (findingHtml && !findingHtml.includes(`href="${href}"`)) {
+    fail(`finding-a-home.html is missing a link to ${href}`);
+  }
+}
+const droppedGuides = mergeHelpfulGuides([{ label: 'Visas and paperwork', href: 'guide-visas.html' }]);
+for (const href of REQUIRED_HOME_GUIDES) {
+  if (!droppedGuides.some((item) => item.href === href)) fail(`helpful guides merge dropped ${href}`);
+}
+if (droppedGuides[0]?.href !== 'guide-visas.html') fail('helpful guides merge should keep an editor link ahead of the defaults');
+const emptied = mergeHelpfulGuides([]);
+if (emptied.map((item) => item.href).join('|') !== REQUIRED_HOME_GUIDES.join('|')) {
+  fail('an empty helpful guides list should fall back to the three settling-in guides');
+}
+const renamed = mergeHelpfulGuides([
+  { label: 'Licence exchange', href: 'guide-exchanging-a-driving-licence.html' }
+]);
+if (renamed[0]?.label !== 'Licence exchange') fail('helpful guides merge should keep an edited label');
+const apartment = read('service-apartment-search.html');
+if (apartment && !apartment.includes('"@type":"Service"')) fail('service-apartment-search.html is missing Service JSON-LD');
+for (const page of ['journal/index.html', 'journal/knife-sharpener-liberation-market.html']) {
+  const html = read(page);
+  if (html && !html.includes('"@type":"BreadcrumbList"')) fail(`${page} is missing BreadcrumbList JSON-LD`);
+  for (const block of jsonLdBlocks(html)) {
+    if (block.__invalid) fail(`${page} has invalid JSON-LD: ${block.__invalid}`);
   }
 }
 

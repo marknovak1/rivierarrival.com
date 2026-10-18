@@ -1,5 +1,5 @@
 ---
-title: I'll find your place
+title: French Riviera Relocation & Home-Finding Service
 description: A concierge home-finding service for newcomers to the French
   Riviera — Nathalie searches, shortlists, visits and negotiates on your behalf.
 eyebrow: A concierge service, not a listings site
@@ -51,6 +51,14 @@ sections:
       way that has nothing to do with the apartment itself and everything to do
       with not having anywhere to put your bags down. That's really what this is
       about: getting you to the part where you stop searching and start living."
+helpful_guides_heading: Helpful guides
+helpful_guides:
+  - label: Exchanging a foreign driving licence
+    href: guide-exchanging-a-driving-licence.html
+  - label: Buying or renting on the Riviera
+    href: guide-buying-or-renting-on-the-french-riviera.html
+  - label: The carte de séjour
+    href: guide-carte-de-sejour.html
 service_link_text: Want to see exactly how it works, step by step? [How I find
   your home →](service-finding-home.html)
 closing_text: If any of this sounds like where you are, I'd like to hear from you.

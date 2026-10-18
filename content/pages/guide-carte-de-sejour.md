@@ -49,7 +49,7 @@ sections:
 
       The declaration itself is registered free of charge, and you receive an attestation to keep. Ordering a new physical card is optional. If you ask for one, Service-Public says you pay 50 euros in fiscal stamps, unless you are an EU, EEA or Swiss citizen, a family member of one, or you hold an "accord de retrait" card. Check that sentence on the day you move. A one-year card is outside this particular rule, because the page limits the duty to cards longer than a year. Your landlord, your bank and the next renewal will still want the new address to be true.
 
-      Proof of address is also what a rental file and a purchase file run on. The lease side is in [Renting an apartment in Nice as a foreigner](guide-renting-an-apartment-in-nice.html). If you are deciding whether the address should be a purchase, read [Buying or renting on the Riviera](guide-buying-or-renting-on-the-french-riviera.html) before you sign a compromis.
+      Proof of address is also what a rental file and a purchase file run on. The lease side is in [Renting an apartment in Nice as a foreigner](guide-renting-an-apartment-in-nice.html). If you are deciding whether the address should be a purchase, read [Buying or renting on the Riviera](guide-buying-or-renting-on-the-french-riviera.html) before you sign a compromis. If you want me to look for the address, start with [I'll find your place](finding-a-home.html).
 
   - heading: "What I will not guess"
     body: |-
@@ -69,7 +69,10 @@ faqs:
   - question: "Do I tell the prefecture if I move apartments?"
     answer: |-
       If the card lasts more than one year, yes. Service-Public says you declare the new address online within three months, even if you stayed in the same town. The declaration is free. A replacement card is optional, and the page prices that request at 50 euros in fiscal stamps, with exceptions. Check the page when you move.
+home_cta: "The card needs an address. If you want help finding one, start with [I'll find your place](finding-a-home.html)."
 related:
+  - label: "I'll find your place"
+    href: finding-a-home.html
   - label: "Visas and paperwork"
     href: guide-visas.html
   - label: "Moving to the French Riviera from the US and Canada"

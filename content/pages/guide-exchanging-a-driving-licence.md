@@ -1,6 +1,6 @@
 ---
 title: "Exchanging a foreign driving licence in France"
-description: "Exchange a non-European driving licence after moving to France: the one-year deadline, which US states and Canadian provinces are on the list, and how the ANTS application works."
+description: "Exchange a non-European driving licence in France: the one-year deadline, which US states and Canadian provinces are on the list, and the ANTS file."
 eyebrow: "After you settle"
 hero_heading: "Exchanging a foreign driving licence"
 hero_intro: "A lot of people land in Nice with a licence that worked perfectly at home and assume it keeps working. For a non-European licence, France gives you a year of normal residence, and then it doesn't. The exchange is a real application, and not every state or province is on the list."
@@ -31,7 +31,7 @@ sections:
 
       The one-year clock is not "one year after the plane landed" for everyone. For a foreigner arriving to stay, in a regular situation, for the first time, Service-Public ties it to the first residence document. If you were handed a first residence card, the year runs from the day it was handed over. If you hold a long-stay visa that counts as a residence permit, the VLS-TS, the year runs from the day you validated that visa online, or from the day OFII stuck the vignette on that first visa. Renewing a card, or changing the reason on it, does not start a fresh year. Students are the exception I come back to below.
 
-      You also need a residence document that is still valid, unless you are French or a European citizen. The card, the visa and the prefecture are in [the carte de séjour](guide-carte-de-sejour.html) and, for the first appointment as I lived it, in [Visas & paperwork](guide-visas.html).
+      You also need a residence document that is still valid, unless you are French or a European citizen. The card, the visa and the prefecture are in [the carte de séjour](guide-carte-de-sejour.html) and, for the first appointment as I lived it, in [Visas & paperwork](guide-visas.html). The address those desks ask for is the part I can look for: [I'll find your place](finding-a-home.html).
 
   - heading: "Your state or province has to be on the list"
     body: |-
@@ -98,7 +98,10 @@ faqs:
   - question: "Can I drive while the exchange is being processed?"
     answer: |-
       Service-Public says yes, because you still hold your foreign licence during the examination, which can take several months. Once they have the original, you can download an ADS, valid for four months, to drive in France until the French licence arrives, within the period your foreign licence was still recognised.
+home_cta: "The ANTS application is yours to lodge. If the address is the part you want help with, start with [I'll find your place](finding-a-home.html)."
 related:
+  - label: "I'll find your place"
+    href: finding-a-home.html
   - label: "Getting around"
     href: guide-transport.html
   - label: "The carte de séjour"

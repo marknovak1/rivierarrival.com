@@ -75,6 +75,7 @@ faqs:
   - question: "Can you look for a place to buy if I am still abroad?"
     answer: |-
       Yes. The home-finding work covers a rental or a purchase. I search, visit and negotiate. The notaire still draws the deed, and you, or someone holding a power of attorney the notaire accepts, still sign it.
+home_cta: "If you want the visits done for a lease or a purchase, start with [I'll find your place](finding-a-home.html)."
 related:
   - label: "Renting an apartment in Nice as a foreigner"
     href: guide-renting-an-apartment-in-nice.html
