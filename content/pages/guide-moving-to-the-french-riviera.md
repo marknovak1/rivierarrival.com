@@ -63,7 +63,7 @@ sections:
 
       I am not going to invent a monthly budget on this page. Rents and groceries on this coast are real, and they are not the same in Menton as they are in Cannes. Ask me for the town you are considering, and I will tell you what I am seeing.
 
-      The rest of the first month is already written, from the same desk: [bank and phone](guide-banking.html), [healthcare](guide-healthcare.html), [getting around](guide-transport.html), [learning French](guide-french.html), and [local businesses](guide-businesses.html). The whole shelf is [Settling in](settling-in.html). If you want the smaller stories, they are in [the journal](/journal/). And if you want a person rather than another tab, the button below comes to me.
+      The rest of the first month is already written, from the same desk: [bank and phone](guide-banking.html), [healthcare](guide-healthcare.html), [getting around](guide-transport.html), [learning French](guide-french.html), and [local businesses](guide-businesses.html). The card you renew after the visa is [the carte de séjour](guide-carte-de-sejour.html). If you will drive, the exchange of a non-European licence has its own year, on [Exchanging a foreign driving licence](guide-exchanging-a-driving-licence.html). If the home might be a purchase rather than a lease, read [Buying or renting on the Riviera](guide-buying-or-renting-on-the-french-riviera.html) before anyone asks you to sign a compromis. The whole shelf is [Settling in](settling-in.html). If you want the smaller stories, they are in [the journal](/journal/). And if you want a person rather than another tab, the button below comes to me.
 faqs:
   - question: "Do US or Canadian citizens need a visa to move to Nice?"
     answer: |-
@@ -92,6 +92,12 @@ related:
     href: service-apartment-search.html
   - label: "Visas and paperwork"
     href: guide-visas.html
+  - label: "The carte de séjour"
+    href: guide-carte-de-sejour.html
+  - label: "Exchanging a foreign driving licence"
+    href: guide-exchanging-a-driving-licence.html
+  - label: "Buying or renting on the Riviera"
+    href: guide-buying-or-renting-on-the-french-riviera.html
   - label: "Settling in"
     href: settling-in.html
   - label: "Neighborhoods"

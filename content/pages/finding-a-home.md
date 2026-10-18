@@ -41,7 +41,7 @@ sections:
       understanding what you actually need, and not wasting your time on what
       you don't. Tell me which one you're thinking about and I'll meet you where
       you are, whether that's a first rental while you find your feet or the
-      place you intend to stay in for good."
+      place you intend to stay in for good. The rental file is in [Renting an apartment in Nice as a foreigner](guide-renting-an-apartment-in-nice.html). The compromis and the notaire are in [Buying or renting on the Riviera](guide-buying-or-renting-on-the-french-riviera.html)."
   - heading: What it feels like
     body: "The version I like best is the one where someone lands, is handed a set
       of keys, and walks straight into a place that's already theirs — instead

@@ -56,6 +56,21 @@ guides:
     image: images/town-antibes.jpg
     imageAlt: "Antibes harbour"
     link: guide-international-schools.html
+  - heading: "Exchanging a driving licence"
+    description: "The one-year deadline, and which states and provinces are on the list."
+    image: images/town-villefranche.jpg
+    imageAlt: "The coast road above Villefranche-sur-Mer"
+    link: guide-exchanging-a-driving-licence.html
+  - heading: "Buying or renting"
+    description: "When a lease is the first step, and what the notaire actually does."
+    image: images/rental-menton.jpg
+    imageAlt: "A light room in a Riviera apartment"
+    link: guide-buying-or-renting-on-the-french-riviera.html
+  - heading: "The carte de séjour"
+    description: "Which residence card you hold, when to renew it, and a new address."
+    image: images/journal-1.jpg
+    imageAlt: "Papers on a café table"
+    link: guide-carte-de-sejour.html
 cta_heading: "Stuck on something specific?"
 cta_text: "Send Nathalie your question — the answer usually becomes a guide."
 cta_label: "Ask Nathalie"

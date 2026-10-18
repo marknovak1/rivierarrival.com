@@ -223,7 +223,10 @@ const INDEXABLE_GUIDES = [
   'guide-moving-to-the-french-riviera.html',
   'guide-retiring-on-the-french-riviera.html',
   'guide-renting-an-apartment-in-nice.html',
-  'guide-international-schools.html'
+  'guide-international-schools.html',
+  'guide-exchanging-a-driving-licence.html',
+  'guide-buying-or-renting-on-the-french-riviera.html',
+  'guide-carte-de-sejour.html'
 ];
 const COST_GUIDE = 'guide-cost-of-living.html';
 const GUIDE_SOURCES = [
@@ -231,7 +234,10 @@ const GUIDE_SOURCES = [
   'content/pages/guide-cost-of-living.md',
   'content/pages/guide-retiring-on-the-french-riviera.md',
   'content/pages/guide-renting-an-apartment-in-nice.md',
-  'content/pages/guide-international-schools.md'
+  'content/pages/guide-international-schools.md',
+  'content/pages/guide-exchanging-a-driving-licence.md',
+  'content/pages/guide-buying-or-renting-on-the-french-riviera.md',
+  'content/pages/guide-carte-de-sejour.md'
 ];
 
 function headerHtml(html) {
