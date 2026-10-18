@@ -576,7 +576,10 @@ const GUIDE_SLUGS = [
   'guide-cost-of-living',
   'guide-retiring-on-the-french-riviera',
   'guide-renting-an-apartment-in-nice',
-  'guide-international-schools'
+  'guide-international-schools',
+  'guide-exchanging-a-driving-licence',
+  'guide-buying-or-renting-on-the-french-riviera',
+  'guide-carte-de-sejour'
 ];
 
 buildPage('finding-a-home', renderFindingAHome);

@@ -56,6 +56,7 @@ export const RELATED_BY_CATEGORY = {
   ],
   'Housing & Neighborhoods': [
     { href: '/guide-renting-an-apartment-in-nice.html', title: 'Renting as a foreigner' },
+    { href: '/guide-buying-or-renting-on-the-french-riviera.html', title: 'Buying or renting' },
     { href: '/finding-a-home.html', title: "I'll find your place" }
   ],
   'Culture & Community': [
@@ -72,6 +73,7 @@ export const RELATED_BY_CATEGORY = {
   ],
   'Travel & Transportation': [
     { href: '/guide-transport.html', title: 'Getting around' },
+    { href: '/guide-exchanging-a-driving-licence.html', title: 'Exchanging a driving licence' },
     { href: '/neighborhoods.html', title: 'Neighborhoods' }
   ],
   'Tips & Resources': [
@@ -84,6 +86,7 @@ export const RELATED_BY_CATEGORY = {
   ],
   'Legal & Administrative': [
     { href: '/guide-visas.html', title: 'Visas & residency' },
+    { href: '/guide-carte-de-sejour.html', title: 'The carte de séjour' },
     { href: '/settling-in.html', title: 'Settling in' }
   ],
   'Cost of Living': [

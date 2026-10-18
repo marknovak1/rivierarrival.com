@@ -90,6 +90,10 @@ related:
     href: finding-a-home.html
   - label: "Visas and paperwork"
     href: guide-visas.html
+  - label: "The carte de séjour"
+    href: guide-carte-de-sejour.html
+  - label: "Buying or renting on the Riviera"
+    href: guide-buying-or-renting-on-the-french-riviera.html
   - label: "Healthcare"
     href: guide-healthcare.html
   - label: "Bank and phone"

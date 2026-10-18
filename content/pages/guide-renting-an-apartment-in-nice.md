@@ -85,7 +85,7 @@ sections:
     body: |-
       I don't publish a wall of listings. I look for a specific person. If you are renting from abroad, the useful version is that I read the ads, I go to the viewings, I tell you what the street is like at night, and I help the file land in an order a French agency will actually read. That service is [I'll find your place](finding-a-home.html), with the steps in [how I find your home](service-finding-home.html) and [apartment search and viewings](service-apartment-search.html).
 
-      After the keys, the unglamorous half is electricity, internet and home insurance, which I have separated into [utilities and home setup](service-utilities.html). The towns themselves are on [Neighborhoods](neighborhoods.html). The visa that has to exist before any of this is comfortable is in [Moving to the French Riviera](guide-moving-to-the-french-riviera.html) and [Visas & paperwork](guide-visas.html).
+      After the keys, the unglamorous half is electricity, internet and home insurance, which I have separated into [utilities and home setup](service-utilities.html). The towns themselves are on [Neighborhoods](neighborhoods.html). The visa that has to exist before any of this is comfortable is in [Moving to the French Riviera](guide-moving-to-the-french-riviera.html) and [Visas & paperwork](guide-visas.html). If you are wondering whether to buy instead, the compromis and the notaire are in [Buying or renting on the Riviera](guide-buying-or-renting-on-the-french-riviera.html). That page does not repeat this dossier.
 
       When you write, tell me the town, the date you need to sleep there, and whether anyone in your life can sign as a guarantor. I would rather know that on the first call.
 faqs:
@@ -116,6 +116,8 @@ related:
     href: guide-retiring-on-the-french-riviera.html
   - label: "Visas and paperwork"
     href: guide-visas.html
+  - label: "Buying or renting on the Riviera"
+    href: guide-buying-or-renting-on-the-french-riviera.html
   - label: "Neighborhoods"
     href: neighborhoods.html
   - label: "Cost of living, town by town (figures still blank)"
