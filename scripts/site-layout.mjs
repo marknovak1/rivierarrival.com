@@ -8,6 +8,24 @@ export function escapeHtml(value) {
     .replace(/"/g, '&quot;');
 }
 
+export function jsonLdScript(value) {
+  const json = JSON.stringify(value).replace(/</g, '\\u003c');
+  return `<script type="application/ld+json">${json}</script>`;
+}
+
+export function breadcrumbList(crumbs) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.name,
+      item: crumb.item
+    }))
+  };
+}
+
 export function siteHeader(active) {
   const journalStyle = active === 'journal'
     ? 'color: var(--color-accent-700)'
@@ -99,16 +117,20 @@ export function siteScripts() {
 </script>`;
 }
 
-export function layout({ title, description, canonical, extraHead = '', body }) {
+export function layout({ title, description, canonical, extraHead = '', body, crumbs = null }) {
+  const socialTitle = escapeHtml(title);
+  const breadcrumb = crumbs ? `${jsonLdScript(breadcrumbList(crumbs))}\n` : '';
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escapeHtml(title)}</title>
+<title>${socialTitle}</title>
 <meta name="description" content="${escapeHtml(description)}">
 <link rel="canonical" href="${escapeHtml(canonical)}">
-<link rel="stylesheet" href="/styles.css">
+<meta property="og:title" content="${socialTitle}">
+<meta name="twitter:title" content="${socialTitle}">
+${breadcrumb}<link rel="stylesheet" href="/styles.css">
 <style>
   body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); }
   a { color: var(--color-accent-700); text-decoration: none; }

@@ -1,5 +1,5 @@
 ---
-title: "Moving to the French Riviera from the US and Canada"
+title: "Moving to the French Riviera: Guide for US & Canadians"
 description: "A practical path for moving to the French Riviera, including Nice, from the US or Canada — visas, housing, schools and the first months."
 eyebrow: "From the US and Canada"
 hero_heading: "Moving to the French Riviera"
@@ -77,6 +77,7 @@ faqs:
   - question: "Can you find the apartment, or only explain the visa?"
     answer: |-
       Both, but they are different jobs. The guides are here so you can see the order. Finding the place is the concierge work: I search, visit and negotiate so you are not doing viewings from another time zone. Write to me if that is what you need.
+home_cta: "If you would rather I found the address, that is the work on [I'll find your place](finding-a-home.html)."
 related:
   - label: "Retiring on the French Riviera"
     href: guide-retiring-on-the-french-riviera.html

@@ -1,5 +1,5 @@
 ---
-title: "Retire to the French Riviera"
+title: "Retiring on the French Riviera as a Non-EU Citizen"
 description: "How to retire to the French Riviera as a non-EU citizen: the visitor residence card, health cover, and what to line up before you arrive."
 eyebrow: "A long stay, without working"
 hero_heading: "Retiring on the French Riviera"
@@ -79,6 +79,7 @@ faqs:
   - question: "Do I need health insurance before I arrive?"
     answer: |-
       Yes. Insurance that covers the length of the stay is one of the three conditions of the visitor card. It is not the same thing as joining the French health system later. I would land with the policy already in the file.
+home_cta: "If you want the apartment handled while you are still abroad, start with [I'll find your place](finding-a-home.html)."
 related:
   - label: "Moving to the French Riviera from the US and Canada"
     href: guide-moving-to-the-french-riviera.html

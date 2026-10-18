@@ -83,6 +83,7 @@ faqs:
   - question: "Can you help us find a home near the school?"
     answer: |-
       Yes. That is the useful half of this page. Tell me the school and the ages, and I will look for a place you can actually leave from in the morning. The home-finding service is the button at the end of this guide.
+home_cta: "If the school is the reason for the town, I can look for the home: [I'll find your place](finding-a-home.html)."
 related:
   - label: "Neighborhoods"
     href: neighborhoods.html

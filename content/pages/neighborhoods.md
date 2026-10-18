@@ -1,6 +1,6 @@
 ---
-title: Neighborhoods
-description: "A town-by-town guide to living on the French Riviera, from Nice and Antibes to Menton and Monaco."
+title: "Neighborhoods: Nice, Antibes, Cannes, Menton"
+description: "A town-by-town guide to Nice, Antibes, Cannes, Menton, Villefranche and Monaco on the French Riviera."
 eyebrow: Neighborhoods
 hero_heading: "Which town is yours?"
 hero_intro: "Nice for a city with an airport. Antibes for a harbour and a school run. Menton for quiet and lemons. Villefranche for the water. Cannes for the work."

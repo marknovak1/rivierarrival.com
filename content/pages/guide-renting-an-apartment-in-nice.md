@@ -1,5 +1,5 @@
 ---
-title: "Renting an apartment in Nice as a foreigner"
+title: "Renting an Apartment in Nice as a Foreigner (Dossier)"
 description: "Renting an apartment in Nice as a foreigner: the dossier landlords may ask for, how a guarantor works, and where the Visale guarantee fits."
 eyebrow: "The rental file"
 hero_heading: "Renting an apartment in Nice as a foreigner"
@@ -101,6 +101,7 @@ faqs:
   - question: "Can you handle the viewings if I am still in the US or Canada?"
     answer: |-
       Yes. That is the home-finding service. I search, shortlist, visit and negotiate, and I help the dossier go out in an order an agency here will read. The button on this page is the way to start.
+home_cta: "If you would rather I went to the viewings, that is [I'll find your place](finding-a-home.html)."
 related:
   - label: "I'll find your place"
     href: finding-a-home.html

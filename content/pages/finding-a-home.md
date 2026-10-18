@@ -1,5 +1,5 @@
 ---
-title: I'll find your place
+title: French Riviera Relocation & Home-Finding Service
 description: A concierge home-finding service for newcomers to the French
   Riviera — Nathalie searches, shortlists, visits and negotiates on your behalf.
 eyebrow: A concierge service, not a listings site

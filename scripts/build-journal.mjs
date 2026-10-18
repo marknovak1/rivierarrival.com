@@ -179,6 +179,11 @@ export function renderPost(post) {
     description: post.description,
     canonical,
     extraHead,
+    crumbs: [
+      { name: 'Home', item: `${SITE}/` },
+      { name: "Nathalie's journal", item: `${SITE}/journal/` },
+      { name: post.title, item: canonical }
+    ],
     body
   });
 }
@@ -311,6 +316,10 @@ export function renderHub(posts) {
     title: "Nathalie's journal — Riviera Arrival",
     description: "One street, one shop, one small administrative victory at a time — a daily journal from Nice for newcomers to the Côte d'Azur.",
     canonical,
+    crumbs: [
+      { name: 'Home', item: `${SITE}/` },
+      { name: "Nathalie's journal", item: canonical }
+    ],
     body
   });
 }

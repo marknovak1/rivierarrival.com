@@ -109,6 +109,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -153,6 +154,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -229,6 +231,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -303,6 +306,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -373,6 +377,10 @@ collections:
               - label: Answer
                 name: answer
                 widget: markdown
+          - label: Home-finding line
+            name: home_cta
+            widget: string
+            hint: "A short closing line. Include a markdown link to finding-a-home.html."
           - label: Related pages
             name: related
             widget: list
@@ -418,6 +426,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -520,6 +529,10 @@ collections:
               - label: Answer
                 name: answer
                 widget: markdown
+          - label: Home-finding line
+            name: home_cta
+            widget: string
+            hint: "A short closing line. Include a markdown link to finding-a-home.html."
           - label: Related pages
             name: related
             widget: list
@@ -565,6 +578,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -635,6 +649,10 @@ collections:
               - label: Answer
                 name: answer
                 widget: markdown
+          - label: Home-finding line
+            name: home_cta
+            widget: string
+            hint: "A short closing line. Include a markdown link to finding-a-home.html."
           - label: Related pages
             name: related
             widget: list
@@ -680,6 +698,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -750,6 +769,10 @@ collections:
               - label: Answer
                 name: answer
                 widget: markdown
+          - label: Home-finding line
+            name: home_cta
+            widget: string
+            hint: "A short closing line. Include a markdown link to finding-a-home.html."
           - label: Related pages
             name: related
             widget: list
@@ -795,6 +818,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -865,6 +889,10 @@ collections:
               - label: Answer
                 name: answer
                 widget: markdown
+          - label: Home-finding line
+            name: home_cta
+            widget: string
+            hint: "A short closing line. Include a markdown link to finding-a-home.html."
           - label: Related pages
             name: related
             widget: list
@@ -910,6 +938,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -980,6 +1009,10 @@ collections:
               - label: Answer
                 name: answer
                 widget: markdown
+          - label: Home-finding line
+            name: home_cta
+            widget: string
+            hint: "A short closing line. Include a markdown link to finding-a-home.html."
           - label: Related pages
             name: related
             widget: list
@@ -1025,6 +1058,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -1095,6 +1129,10 @@ collections:
               - label: Answer
                 name: answer
                 widget: markdown
+          - label: Home-finding line
+            name: home_cta
+            widget: string
+            hint: "A short closing line. Include a markdown link to finding-a-home.html."
           - label: Related pages
             name: related
             widget: list
@@ -1140,6 +1178,7 @@ collections:
           - label: Page title
             name: title
             widget: string
+            hint: "Browser tab and Google title. Keep it within 60 characters. The on-page heading is separate."
           - label: Meta description
             name: description
             widget: text
@@ -1210,6 +1249,10 @@ collections:
               - label: Answer
                 name: answer
                 widget: markdown
+          - label: Home-finding line
+            name: home_cta
+            widget: string
+            hint: "A short closing line. Include a markdown link to finding-a-home.html."
           - label: Related pages
             name: related
             widget: list
