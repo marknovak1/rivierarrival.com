@@ -1,5 +1,5 @@
 ---
-title: Settling in
+title: Settling in on the French Riviera
 description: "Practical settling-in guides for newcomers to the French Riviera: visas, banking, healthcare, transport and more."
 eyebrow: Settling in
 hero_heading: "Everything you'll need in the first month"

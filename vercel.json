@@ -6,7 +6,30 @@
   "outputDirectory": "public",
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        { "type": "host", "value": "rivierarrival-samples.vercel.app" }
+      ],
+      "destination": "https://www.rivieraarrival.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/journal.html",
+      "destination": "/journal/",
+      "permanent": true
+    },
+    {
+      "source": "/journal",
+      "destination": "/journal/",
+      "permanent": true
+    },
+    {
+      "source": "/journal/index.html",
       "destination": "/journal/",
       "permanent": true
     },

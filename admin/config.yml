@@ -53,6 +53,12 @@ collections:
         widget: boolean
         default: false
         hint: On = never shows on the site, even after this entry is published through the workflow below.
+      - label: Hide from Google
+        name: noindex
+        widget: boolean
+        default: false
+        required: false
+        hint: On = noindex and left out of the sitemap. The post still appears on the journal.
       - label: Category
         name: category
         widget: select

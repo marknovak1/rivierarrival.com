@@ -7,7 +7,7 @@ hero_intro: "Nice for a city with an airport. Antibes for a harbour and a school
 hero_image: images/town-nice.jpg
 hero_image_alt: "Riviera coastline from Nice"
 towns_heading: "Town by town"
-towns_intro: "A guide to each will open from here."
+towns_intro: ""
 towns:
   - name: Nice
     description: "The capital of the coast — big enough to disappear into."
