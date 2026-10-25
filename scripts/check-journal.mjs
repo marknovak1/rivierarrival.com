@@ -41,7 +41,7 @@ if (hub) {
 
 if (post) {
   if ((post.match(/<h1\b/g) || []).length !== 1) fail('Post should have exactly one H1');
-  if (!post.includes('<title>The knife sharpener who comes to Libération market on Fridays — Riviera Arrival</title>')) {
+  if (!post.includes('<title>The knife sharpener who comes to Libération market on Fridays</title>')) {
     fail('Post title tag is wrong');
   }
   if (!post.includes('rel="canonical" href="https://www.rivieraarrival.com/journal/knife-sharpener-liberation-market.html"')) {
@@ -366,7 +366,7 @@ if (rentingGuide && !rentingGuide.includes('guide-buying-or-renting-on-the-frenc
 }
 
 const rootPages = readdirSync(ROOT).filter((name) => name.endsWith('.html') && !name.startsWith('_'));
-const allowedNoindex = new Set(['guide-cost-of-living.html']);
+const allowedNoindex = new Set(['guide-cost-of-living.html', '404.html']);
 for (const page of rootPages) {
   const html = read(page);
   if (!html) continue;
@@ -391,6 +391,23 @@ for (const page of rootPages) {
   const twitter = html.match(/<meta name="twitter:title" content="([^"]*)"/);
   if (!og || decodeEntities(og[1]) !== title) fail(`${page} og:title does not match the title`);
   if (!twitter || decodeEntities(twitter[1]) !== title) fail(`${page} twitter:title does not match the title`);
+  for (const property of ['og:description', 'og:url', 'og:type', 'og:image']) {
+    if (!html.includes(`property="${property}"`)) fail(`${page} is missing ${property}`);
+  }
+  if (!html.includes('name="twitter:card" content="summary_large_image"')) {
+    fail(`${page} is missing a summary_large_image twitter card`);
+  }
+  if (!html.includes('rel="icon"')) fail(`${page} is missing a favicon link`);
+  if (!/<html lang="en">/.test(html)) fail(`${page} must be lang="en"`);
+  if (html.includes('lang-btn') || html.includes('data-lang="fr"')) fail(`${page} still has the EN/FR toggle`);
+  if (!html.includes('class="brand-lockup" href="/"')) fail(`${page} logo must link to /`);
+  const year = String(new Date().getFullYear());
+  if (!html.includes(`© ${year} Riviera Arrival`) && !html.includes(`&copy; ${year} Riviera Arrival`)) {
+    fail(`${page} is missing the copyright line`);
+  }
+  if ((html.match(/<main\b/g) || []).length !== 1) fail(`${page} should have exactly one main`);
+  if ((html.match(/<h1\b/g) || []).length !== 1) fail(`${page} should have exactly one H1`);
+  if (/href="#"/ .test(html)) fail(`${page} still has a dead href="#"`);
   const noindex = /<meta\s+name="robots"\s+content="[^"]*\bnoindex\b/i.test(html);
   if (noindex && !allowedNoindex.has(page)) fail(`${page} gained noindex`);
   if (!noindex && allowedNoindex.has(page)) fail(`${page} must stay noindex`);
@@ -443,6 +460,93 @@ for (const page of ['journal/index.html', 'journal/knife-sharpener-liberation-ma
   for (const block of jsonLdBlocks(html)) {
     if (block.__invalid) fail(`${page} has invalid JSON-LD: ${block.__invalid}`);
   }
+}
+
+const newcomers = read('journal/why-the-french-riviera-attracts-so-many-newcomers.html');
+if (newcomers) {
+  if (!/\bnoindex\b/i.test(newcomers)) fail('Newcomers journal post must be noindex');
+  if ((newcomers.match(/<h1\b/g) || []).length !== 1) fail('Newcomers post should have exactly one H1');
+  if (newcomers.includes('🌴')) fail('Newcomers post should drop the emoji H1');
+  const newcomersDesc = (newcomers.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
+  if (!newcomersDesc || newcomersDesc.length > 160) {
+    fail(`Newcomers meta description must be 1–160 characters, got ${newcomersDesc.length}`);
+  }
+}
+if (sitemap && sitemap.includes('why-the-french-riviera-attracts-so-many-newcomers')) {
+  fail('Sitemap must omit the noindex newcomers post');
+}
+if (sitemap && (sitemap.match(/<loc>/g) || []).length !== (sitemap.match(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/g) || []).length) {
+  fail('Every sitemap URL needs a YYYY-MM-DD lastmod');
+}
+if (read('scripts/build-journal.mjs') && !read('scripts/build-journal.mjs').includes('Newsletter signup stays hidden')) {
+  fail('Journal build should comment why the newsletter block is hidden');
+}
+if (hub && (/Subscribe/.test(hub) || hub.includes('Earlier this week') || hub.includes('Daily, from Nice'))) {
+  fail('Journal hub still has the newsletter block or a stale label');
+}
+if (hub && !hub.includes('From Nice')) fail('Journal hub should say From Nice');
+if (hub && !hub.includes('28 August 2026')) fail('Journal dates should include the year');
+if (homepage && (homepage.includes('Take the neighborhood quiz') || homepage.includes('People &amp; events') || homepage.includes('People & events'))) {
+  fail('Homepage still shows the quiz or People & events card');
+}
+if (homepage && !homepage.includes('From Nice')) fail('Homepage journal label should say From Nice');
+if (homepage && !homepage.includes('28 August 2026')) fail('Homepage journal dates should include the year');
+if (neighborhoods && (neighborhoods.includes('Take the quiz') || neighborhoods.includes('A guide to each will open from here'))) {
+  fail('Neighborhoods still promises a quiz or per-town guides');
+}
+const fareUrl = 'https://www.lignesdazur.com/titres-et-tarifs/quel-titre-pour-mon-deplacement/titres-au-voyage/';
+for (const page of ['index.html', 'settling-in.html', 'guide-transport.html']) {
+  const html = read(page);
+  if (html && !html.includes(fareUrl)) fail(`${page} should link the €1.70 fare to Lignes d'Azur`);
+  if (html && !html.includes('€1.70') && !html.includes('&euro;1.70')) fail(`${page} should keep the €1.70 fare`);
+}
+const healthcare = read('guide-healthcare.html');
+if (healthcare && !healthcare.includes('70%')) fail('Healthcare guide should still mention the 70% reimbursement');
+const visas = read('guide-visas.html');
+if (visas && !visas.includes('€50') && !visas.includes('&euro;50')) fail('Visas guide should still mention the €50 student fee');
+const contact = read('contact.html');
+if (contact && !/<form\b[^>]*onsubmit="return false"/.test(contact)) fail('Contact form must not submit');
+if (contact && !/type="email"/.test(contact)) fail('Contact email field needs type="email"');
+for (const name of ['name', 'email', 'message']) {
+  if (contact && !contact.includes(`name="${name}"`)) fail(`Contact form is missing name="${name}"`);
+  if (contact && !new RegExp(`name="${name}"[^>]*required|required[^>]*name="${name}"`).test(contact)) {
+    fail(`Contact field ${name} should be required`);
+  }
+}
+if (contact && !contact.includes('TODO')) fail('Contact form needs a TODO comment');
+if (contact && /mailto:|tel:/.test(contact)) fail('Contact page must not add an email or phone link');
+if (!existsSync(join(ROOT, 'favicon.svg')) || !existsSync(join(ROOT, 'favicon.ico'))) {
+  fail('favicon.svg and favicon.ico are required');
+}
+if (!existsSync(join(ROOT, 'public', 'favicon.ico')) || !existsSync(join(ROOT, 'public', '404.html'))) {
+  fail('public output is missing favicon.ico or 404.html');
+}
+const notFound = read('404.html');
+if (notFound && !/\bnoindex\b/i.test(notFound)) fail('404 page must be noindex');
+if (notFound && !notFound.includes('href="/"')) fail('404 page must link home');
+if (homepage && !homepage.includes('"logo":"https://www.rivieraarrival.com/favicon.svg"')) {
+  fail('Organization JSON-LD is missing the logo');
+}
+if (homepage && /"telephone"|"email"/.test(homepage)) fail('Organization JSON-LD must not add contact details');
+const css = read('styles.css');
+if (css && !css.includes('.guide-body a')) fail('Guide body links should be underlined in CSS');
+if (css && css.includes('.btn-primary { background: var(--color-accent)')) {
+  fail('Primary buttons should not use the original #c67139 accent as their background');
+}
+if (!homepage.includes('fetchpriority="high"') || /hero-coast\.jpg"[^>]*loading="lazy"/.test(homepage)) {
+  fail('The LCP hero must not be lazy-loaded');
+}
+if (!homepage.includes('aspect-ratio: 6 / 5') || !/hero-coast\.jpg"[^>]*width="1366"/.test(homepage)) {
+  fail('The hero arch needs explicit dimensions');
+}
+const vercel = read('vercel.json');
+if (vercel && !vercel.includes('"value": "rivierarrival-samples.vercel.app"')) {
+  fail('vercel.json must redirect the samples host with a host condition');
+}
+if (vercel && !vercel.includes('"/index.html"')) fail('vercel.json must redirect /index.html to /');
+if (vercel && !vercel.includes('"/journal/index.html"')) fail('vercel.json must redirect /journal/index.html');
+if (read('admin/config.yml') && !read('admin/config.yml').includes('name: noindex')) {
+  fail('Journal CMS config should expose the noindex field');
 }
 
 if (errors.length) {

@@ -1,4 +1,14 @@
 export const DEFAULT_COVER = '/images/journal-featured.jpg';
+export const SITE = 'https://www.rivieraarrival.com';
+export const DEFAULT_OG_IMAGE = `${SITE}/images/hero-coast.jpg`;
+export const BUS_FARE_URL = 'https://www.lignesdazur.com/titres-et-tarifs/quel-titre-pour-mon-deplacement/titres-au-voyage/';
+
+const TITLE_MAX = 60;
+const BRAND_SUFFIX = ' — Riviera Arrival';
+
+export function copyrightYear() {
+  return new Date().getFullYear();
+}
 
 export function escapeHtml(value) {
   return String(value ?? '')
@@ -6,6 +16,14 @@ export function escapeHtml(value) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+export function documentTitle(title) {
+  const base = String(title || '').trim();
+  if (!base) return 'Riviera Arrival';
+  if (base.includes('Riviera Arrival')) return base;
+  const withBrand = `${base}${BRAND_SUFFIX}`;
+  return withBrand.length <= TITLE_MAX ? withBrand : base;
 }
 
 export function jsonLdScript(value) {
@@ -26,28 +44,34 @@ export function breadcrumbList(crumbs) {
   };
 }
 
+export function organizationLogo() {
+  return `${SITE}/favicon.svg`;
+}
+
+const NAV_ITEMS = [
+  { key: 'finding-a-home', href: '/finding-a-home.html', label: "I'll find your place" },
+  { key: 'settling-in', href: '/settling-in.html', label: 'Settling in' },
+  { key: 'neighborhoods', href: '/neighborhoods.html', label: 'Neighborhoods' },
+  { key: 'journal', href: '/journal/', label: "Nathalie's journal" },
+  { key: 'about', href: '/about.html', label: 'About' },
+  { key: 'contact', href: '/contact.html', label: 'Contact' }
+];
+
 export function siteHeader(active) {
-  const journalStyle = active === 'journal'
-    ? 'color: var(--color-accent-700)'
-    : 'color: var(--color-text)';
-  const journalClass = active === 'journal' ? '' : ' class="nav-link"';
-  return `<header style="display: flex; align-items: center; gap: 26px; padding: 20px 48px; max-width: 1320px; margin: 0 auto">
-    <a href="/index.html" style="display: flex; align-items: baseline; gap: 8px; color: var(--color-text)">
-      <span style="font-family: var(--font-heading); font-size: 23px; letter-spacing: -0.01em">Riviera Arrival</span>
-      <span style="width: 9px; height: 9px; border-radius: 999px; background: var(--color-accent); display: inline-block"></span>
+  const links = NAV_ITEMS.map((item) => {
+    return item.key === active
+      ? `<a href="${item.href}" style="color: var(--color-accent-700)">${item.label}</a>`
+      : `<a href="${item.href}" class="nav-link" style="color: var(--color-text)">${item.label}</a>`;
+  }).join('\n      ');
+  return `<header class="site-header">
+    <a class="brand-lockup" href="/">
+      <span class="brand-name">Riviera Arrival</span>
+      <span class="brand-mark" aria-hidden="true"></span>
     </a>
-    <nav style="display: flex; gap: 28px; margin-left: 18px; font-size: 15px">
-      <a href="/finding-a-home.html" class="nav-link" style="color: var(--color-text)">I'll find your place</a>
-      <a href="/settling-in.html" class="nav-link" style="color: var(--color-text)">Settling in</a>
-      <a href="/neighborhoods.html" class="nav-link" style="color: var(--color-text)">Neighborhoods</a>
-      <a href="/journal/"${journalClass} style="${journalStyle}">Nathalie's journal</a>
-      <a href="/about.html" class="nav-link" style="color: var(--color-text)">About</a>
+    <nav class="site-nav">
+      ${links}
     </nav>
-    <div style="margin-left: auto; display: flex; align-items: center; gap: 14px">
-      <div style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent)">
-        <button type="button" class="lang-btn active" data-lang="en">EN</button>
-        <button type="button" class="lang-btn" data-lang="fr">FR</button>
-      </div>
+    <div class="site-header-tools">
       <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
       </button>
@@ -56,27 +80,27 @@ export function siteHeader(active) {
 }
 
 export function siteFooter() {
-  return `<footer class="site-footer" style="max-width: 1320px; margin: 88px auto 0; padding: 56px 48px 64px; display: flex; gap: 48px; align-items: flex-start; border-top: 1px solid var(--color-divider)">
-    <div style="flex: 0 0 280px">
-      <div style="font-family: var(--font-heading); font-size: 21px">Riviera Arrival</div>
-      <div style="font-size: 14px; margin-top: 8px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">rivieraarrival.com · Nice, France</div>
+  const year = copyrightYear();
+  return `<footer class="site-footer">
+    <div class="site-footer-brand">
+      <div class="site-footer-name">Riviera Arrival</div>
+      <div class="footer-muted">rivieraarrival.com · Nice, France</div>
+      <div class="footer-copy">© ${year} Riviera Arrival</div>
     </div>
-    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 180px)); gap: 32px; font-size: 15px">
-      <div style="display: flex; flex-direction: column; gap: 10px">
-        <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Stay</span>
+    <div class="site-footer-cols">
+      <div class="site-footer-col">
+        <span class="footer-label">Stay</span>
         <a href="/finding-a-home.html">I'll find your place</a>
         <a href="/neighborhoods.html">Neighborhoods</a>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 10px">
-        <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Settle in</span>
+      <div class="site-footer-col">
+        <span class="footer-label">Settle in</span>
         <a href="/settling-in.html">Guides</a>
         <a href="/about.html">About Nathalie</a>
-        <a href="/contact.html">Contact</a>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 10px">
-        <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Read</span>
+      <div class="site-footer-col">
+        <span class="footer-label">Read</span>
         <a href="/journal/">Nathalie's journal</a>
-        <a href="/neighborhoods.html">Neighborhoods</a>
         <a href="/contact.html">Contact</a>
       </div>
     </div>
@@ -85,20 +109,6 @@ export function siteFooter() {
 
 export function siteScripts() {
   return `<script>
-  (function () {
-    var btns = document.querySelectorAll('.lang-btn');
-    var saved = null;
-    try { saved = localStorage.getItem('ra-lang'); } catch (e) {}
-    if (saved) setLang(saved);
-    btns.forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.lang); }); });
-    function setLang(lang) {
-      btns.forEach(function (b) { b.classList.toggle('active', b.dataset.lang === lang); });
-      document.documentElement.setAttribute('lang', lang);
-      try { localStorage.setItem('ra-lang', lang); } catch (e) {}
-    }
-  })();
-</script>
-<script>
   (function () {
     var toggle = document.querySelector('.nav-toggle');
     var nav = document.querySelector('header nav');
@@ -117,7 +127,46 @@ export function siteScripts() {
 </script>`;
 }
 
-export function layout({ title, description, canonical, extraHead = '', body, crumbs = null }) {
+export function iconLinks() {
+  return `<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+`;
+}
+
+export function socialTags({ title, description, url, image = DEFAULT_OG_IMAGE, type = 'website' }) {
+  const safeTitle = escapeHtml(title);
+  const safeDescription = escapeHtml(description);
+  const safeUrl = escapeHtml(url);
+  const safeImage = escapeHtml(image);
+  const safeType = escapeHtml(type);
+  return `<meta property="og:title" content="${safeTitle}">
+<meta property="og:description" content="${safeDescription}">
+<meta property="og:url" content="${safeUrl}">
+<meta property="og:type" content="${safeType}">
+<meta property="og:image" content="${safeImage}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${safeTitle}">
+<meta name="twitter:description" content="${safeDescription}">
+<meta name="twitter:image" content="${safeImage}">
+`;
+}
+
+export function linkBusFare(escapedText) {
+  return String(escapedText).replace(/€1\.70|&euro;1\.70/g, `<a class="source-link" href="${BUS_FARE_URL}">€1.70</a>`);
+}
+
+export function layout({
+  title,
+  description,
+  canonical,
+  extraHead = '',
+  body,
+  crumbs = null,
+  image = DEFAULT_OG_IMAGE,
+  type = 'website',
+  active = 'journal',
+  robots = ''
+}) {
   const socialTitle = escapeHtml(title);
   const breadcrumb = crumbs ? `${jsonLdScript(breadcrumbList(crumbs))}\n` : '';
   return `<!DOCTYPE html>
@@ -128,9 +177,7 @@ export function layout({ title, description, canonical, extraHead = '', body, cr
 <title>${socialTitle}</title>
 <meta name="description" content="${escapeHtml(description)}">
 <link rel="canonical" href="${escapeHtml(canonical)}">
-<meta property="og:title" content="${socialTitle}">
-<meta name="twitter:title" content="${socialTitle}">
-${breadcrumb}<link rel="stylesheet" href="/styles.css">
+${iconLinks()}${socialTags({ title, description, url: canonical, image, type })}${robots}${breadcrumb}<link rel="stylesheet" href="/styles.css">
 <style>
   body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); }
   a { color: var(--color-accent-700); text-decoration: none; }
@@ -140,7 +187,10 @@ ${extraHead}
 </head>
 <body>
 <div style="background: var(--color-bg); min-height: 100vh">
+${siteHeader(active)}
+<main>
 ${body}
+</main>
 ${siteFooter()}
 </div>
 ${siteScripts()}

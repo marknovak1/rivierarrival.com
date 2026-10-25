@@ -3,15 +3,90 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nathalie's journal — Riviera Arrival</title>
+<title>Nathalie's journal from Nice — Riviera Arrival</title>
 <meta name="description" content="One street, one shop, one small administrative victory at a time — a daily journal from Nice for newcomers to the Côte d'Azur.">
 <link rel="canonical" href="https://www.rivieraarrival.com/journal/">
-<meta property="og:title" content="Nathalie's journal — Riviera Arrival">
-<meta name="twitter:title" content="Nathalie's journal — Riviera Arrival">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<meta property="og:title" content="Nathalie's journal from Nice — Riviera Arrival">
+<meta property="og:description" content="One street, one shop, one small administrative victory at a time — a daily journal from Nice for newcomers to the Côte d'Azur.">
+<meta property="og:url" content="https://www.rivieraarrival.com/journal/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://www.rivieraarrival.com/images/hero-coast.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nathalie's journal from Nice — Riviera Arrival">
+<meta name="twitter:description" content="One street, one shop, one small administrative victory at a time — a daily journal from Nice for newcomers to the Côte d'Azur.">
+<meta name="twitter:image" content="https://www.rivieraarrival.com/images/hero-coast.jpg">
 <meta http-equiv="refresh" content="0; url=/journal/">
 <script>location.replace('/journal/');</script>
+<link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+<div style="background: var(--color-bg); min-height: 100vh">
+<header class="site-header">
+    <a class="brand-lockup" href="/">
+      <span class="brand-name">Riviera Arrival</span>
+      <span class="brand-mark" aria-hidden="true"></span>
+    </a>
+    <nav class="site-nav">
+      <a href="/finding-a-home.html" class="nav-link" style="color: var(--color-text)">I'll find your place</a>
+      <a href="/settling-in.html" class="nav-link" style="color: var(--color-text)">Settling in</a>
+      <a href="/neighborhoods.html" class="nav-link" style="color: var(--color-text)">Neighborhoods</a>
+      <a href="/journal/" style="color: var(--color-accent-700)">Nathalie's journal</a>
+      <a href="/about.html" class="nav-link" style="color: var(--color-text)">About</a>
+      <a href="/contact.html" class="nav-link" style="color: var(--color-text)">Contact</a>
+    </nav>
+    <div class="site-header-tools">
+      <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      </button>
+    </div>
+  </header>
+<main>
+  <h1 style="font-family: var(--font-heading); font-size: 48px; margin: 48px 0 12px">Nathalie's journal</h1>
   <p><a href="/journal/">Continue to Nathalie's journal</a></p>
+</main>
+<footer class="site-footer">
+    <div class="site-footer-brand">
+      <div class="site-footer-name">Riviera Arrival</div>
+      <div class="footer-muted">rivieraarrival.com · Nice, France</div>
+      <div class="footer-copy">© 2026 Riviera Arrival</div>
+    </div>
+    <div class="site-footer-cols">
+      <div class="site-footer-col">
+        <span class="footer-label">Stay</span>
+        <a href="/finding-a-home.html">I'll find your place</a>
+        <a href="/neighborhoods.html">Neighborhoods</a>
+      </div>
+      <div class="site-footer-col">
+        <span class="footer-label">Settle in</span>
+        <a href="/settling-in.html">Guides</a>
+        <a href="/about.html">About Nathalie</a>
+      </div>
+      <div class="site-footer-col">
+        <span class="footer-label">Read</span>
+        <a href="/journal/">Nathalie's journal</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>
+<script>
+  (function () {
+    var toggle = document.querySelector('.nav-toggle');
+    var nav = document.querySelector('header nav');
+    if (!toggle || !nav) return;
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('nav-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    nav.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        nav.classList.remove('nav-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+</script>
 </body>
 </html>

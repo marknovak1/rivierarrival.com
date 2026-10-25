@@ -3,29 +3,24 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { marked } from 'marked';
-import { DEFAULT_COVER, breadcrumbList, escapeHtml, jsonLdScript, siteScripts } from './site-layout.mjs';
+import {
+  DEFAULT_COVER,
+  DEFAULT_OG_IMAGE,
+  breadcrumbList,
+  documentTitle,
+  escapeHtml,
+  iconLinks,
+  jsonLdScript,
+  linkBusFare,
+  organizationLogo,
+  siteFooter,
+  siteHeader,
+  siteScripts,
+  socialTags
+} from './site-layout.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://www.rivieraarrival.com';
-const TITLE_MAX = 60;
-const BRAND_SUFFIX = ' — Riviera Arrival';
-
-// Browser titles stay within 60 characters. A short page title keeps the
-// brand suffix; a title that would overflow is used on its own.
-function documentTitle(title) {
-  const base = String(title || '').trim();
-  if (!base) return 'Riviera Arrival';
-  if (base.includes('Riviera Arrival')) return base;
-  const withBrand = `${base}${BRAND_SUFFIX}`;
-  return withBrand.length <= TITLE_MAX ? withBrand : base;
-}
-
-function socialTitleTags(title) {
-  const safe = escapeHtml(title);
-  return `<meta property="og:title" content="${safe}">
-<meta name="twitter:title" content="${safe}">
-`;
-}
 
 const AREA_SERVED = ['Nice', 'Antibes', 'Cannes', 'Menton'].map((name) => ({
   '@type': 'City',
@@ -40,6 +35,7 @@ function organizationNode() {
     '@id': `${SITE}/#organization`,
     name: 'Riviera Arrival',
     url: `${SITE}/`,
+    logo: organizationLogo(),
     description: ORG_DESCRIPTION,
     areaServed: AREA_SERVED
   };
@@ -110,76 +106,23 @@ const SECTION_PARAGRAPH_STYLE =
 const LOOSE_PARAGRAPH_STYLE =
   'font-size: 18px; line-height: 1.6; margin: 32px 0 0; color: color-mix(in srgb, var(--color-text) 80%, transparent)';
 
-const NAV_ITEMS = [
-  { key: 'finding-a-home', href: 'finding-a-home.html', label: "I'll find your place" },
-  { key: 'settling-in', href: 'settling-in.html', label: 'Settling in' },
-  { key: 'neighborhoods', href: 'neighborhoods.html', label: 'Neighborhoods' },
-  { key: 'journal', href: '/journal/', label: "Nathalie's journal" },
-  { key: 'about', href: 'about.html', label: 'About' }
-];
-
-function pageHeader(active) {
-  const links = NAV_ITEMS.map((item) => {
-    return item.key === active
-      ? `<a href="${item.href}" style="color: var(--color-accent-700)">${item.label}</a>`
-      : `<a href="${item.href}" class="nav-link" style="color: var(--color-text)">${item.label}</a>`;
-  }).join('\n      ');
-  return `<header style="display: flex; align-items: center; gap: 26px; padding: 20px 48px; max-width: 1320px; margin: 0 auto">
-    <a href="index.html" style="display: flex; align-items: baseline; gap: 8px; color: var(--color-text)">
-      <span style="font-family: var(--font-heading); font-size: 23px; letter-spacing: -0.01em">Riviera Arrival</span>
-      <span style="width: 9px; height: 9px; border-radius: 999px; background: var(--color-accent); display: inline-block"></span>
-    </a>
-    <nav style="display: flex; gap: 28px; margin-left: 18px; font-size: 15px">
-      ${links}
-    </nav>
-    <div style="margin-left: auto; display: flex; align-items: center; gap: 14px">
-      <div style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent)">
-        <button type="button" class="lang-btn active" data-lang="en">EN</button>
-        <button type="button" class="lang-btn" data-lang="fr">FR</button>
-      </div>
-      <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
-      </button>
-    </div>
-  </header>`;
-}
-
-function pageFooter() {
-  return `<footer class="site-footer" style="max-width: 1320px; margin: 80px auto 0; padding: 56px 48px 64px; display: flex; gap: 48px; align-items: flex-start; border-top: 1px solid var(--color-divider)">
-    <div style="flex: 0 0 280px">
-      <div style="font-family: var(--font-heading); font-size: 21px">Riviera Arrival</div>
-      <div style="font-size: 14px; margin-top: 8px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">rivieraarrival.com &middot; Nice, France</div>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 180px)); gap: 32px; font-size: 15px">
-      <div style="display: flex; flex-direction: column; gap: 10px">
-        <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Stay</span>
-        <a href="finding-a-home.html">I'll find your place</a>
-        <a href="neighborhoods.html">Neighborhoods</a>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 10px">
-        <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Settle in</span>
-        <a href="settling-in.html">Guides</a>
-        <a href="about.html">About Nathalie</a>
-        <a href="contact.html">Contact</a>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 10px">
-        <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Read</span>
-        <a href="/journal/">Nathalie's journal</a>
-        <a href="neighborhoods.html">Neighborhoods</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </div>
-  </footer>`;
-}
-
-// Shared shell for all "pages" collection pages. fontLinks/extraStyles are
-// escape hatches for the one-off differences between pages (finding-a-home's
-// redundant Google Fonts link; settling-in/neighborhoods' .stub-grid media
-// queries) so each page still comes out byte-identical to its hand-written
-// original.
-function pageShell({ activeNav, title, description, canonical = '', fontLinks = '', extraStyles = '', extraHead = '', body }) {
+// Shared shell for Decap "pages" collection output.
+function pageShell({
+  activeNav,
+  title,
+  description,
+  canonical = '',
+  fontLinks = '',
+  extraStyles = '',
+  extraHead = '',
+  body,
+  ogImage = DEFAULT_OG_IMAGE,
+  ogType = 'website',
+  robots = ''
+}) {
   const fullTitle = documentTitle(title);
   const canonicalTag = canonical ? `<link rel="canonical" href="${escapeHtml(canonical)}">\n` : '';
+  const pageUrl = canonical || `${SITE}/`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -187,7 +130,7 @@ function pageShell({ activeNav, title, description, canonical = '', fontLinks = 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(fullTitle)}</title>
 <meta name="description" content="${escapeHtml(description)}">
-${canonicalTag}${socialTitleTags(fullTitle)}${extraHead}${fontLinks}<link rel="stylesheet" href="styles.css">
+${canonicalTag}${iconLinks()}${socialTags({ title: fullTitle, description, url: pageUrl, image: ogImage, type: ogType })}${robots}${extraHead}${fontLinks}<link rel="stylesheet" href="/styles.css">
 <style>
   body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); }
   a { color: var(--color-accent-700); text-decoration: none; }
@@ -198,11 +141,11 @@ ${extraStyles}</style>
 
 <div style="background: var(--color-bg); min-height: 100vh">
 
-  ${pageHeader(activeNav)}
-
+  ${siteHeader(activeNav)}
+<main>
   ${body}
-
-  ${pageFooter()}
+</main>
+  ${siteFooter()}
 </div>
 
 ${siteScripts()}
@@ -262,12 +205,12 @@ function renderFindingAHome(data) {
   const ctaLabel = escapeHtml(data.cta_label);
   const ctaLink = escapeHtml(data.cta_link);
 
-  const body = `<main style="max-width: 1320px; margin: 0 auto; padding: 40px 48px 0">
+  const body = `<div style="max-width: 1320px; margin: 0 auto; padding: 40px 48px 0">
     <span class="tag tag-accent-2" style="border-radius: 999px">${escapeHtml(data.eyebrow)}</span>
     <h1 style="font-family: var(--font-heading); font-size: 60px; line-height: 1.03; letter-spacing: -0.02em; margin: 20px 0 0; max-width: 15em; text-wrap: pretty">${escapeHtml(data.hero_heading)}</h1>
     <p style="font-size: 19px; line-height: 1.55; max-width: 40em; margin: 22px 0 0; color: color-mix(in srgb, var(--color-text) 78%, transparent); text-wrap: pretty">${inline(data.hero_intro)}</p>
     <a href="${ctaLink}" class="btn btn-primary" style="border-radius: 999px; margin-top: 24px; padding: 13px 26px">${ctaLabel}</a>
-  </main>
+  </div>
 
   <section style="max-width: 1320px; margin: 56px auto 0; padding: 0 48px">
     <div style="max-width: 46em">
@@ -314,10 +257,24 @@ const STUB_GRID_STYLES = `  @media (max-width: 900px) { .stub-grid { grid-templa
 function renderGuideCard(guide) {
   const image = pageImage(guide.image);
   const alt = text(guide.imageAlt || guide.heading);
-  return `<a href="${escapeHtml(guide.link)}" style="background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 10px; color: var(--color-text); text-decoration: none">
-        <div style="height: 130px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 4px"><img src="${escapeHtml(image)}" alt="${alt}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy"></div>
-        <div style="font-family: var(--font-heading); font-size: 20px; line-height: 1.15">${text(guide.heading)}</div>
-        <div style="font-size: 15px; color: color-mix(in srgb, var(--color-text) 68%, transparent)">${text(guide.description)}</div>
+  const description = linkBusFare(text(guide.description));
+  const cardStyle = 'background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 10px; color: var(--color-text); text-decoration: none';
+  const photo = `<div style="height: 130px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 4px"><img src="${escapeHtml(image)}" alt="${alt}" width="640" height="260" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy"></div>`;
+  const heading = `<div style="font-family: var(--font-heading); font-size: 20px; line-height: 1.15">${text(guide.heading)}</div>`;
+  const blurb = `<div style="font-size: 15px; color: color-mix(in srgb, var(--color-text) 68%, transparent)">${description}</div>`;
+  if (description.includes('source-link')) {
+    return `<div class="essential-card" style="${cardStyle}">
+        <a href="${escapeHtml(guide.link)}" style="display: flex; flex-direction: column; gap: 10px; color: inherit; text-decoration: none">
+        ${photo}
+        ${heading}
+        </a>
+        ${blurb}
+      </div>`;
+  }
+  return `<a href="${escapeHtml(guide.link)}" class="essential-card" style="${cardStyle}">
+        ${photo}
+        ${heading}
+        ${blurb}
       </a>`;
 }
 
@@ -376,6 +333,14 @@ function renderNeighborhoods(data) {
   const townCards = data.towns.map(renderTownCard).join('\n      ');
   const heroImage = pageImage(data.hero_image);
   const heroAlt = text(data.hero_image_alt || data.hero_heading);
+  const townsIntro = String(data.towns_intro || '').trim();
+  const townsIntroHtml = townsIntro
+    ? `<p style="margin: 10px 0 0; font-size: 17px; max-width: 44em; color: color-mix(in srgb, var(--color-text) 70%, transparent); text-wrap: pretty">${inline(townsIntro)}</p>`
+    : '';
+  const ctaHref = String(data.cta_link || '').trim();
+  const ctaButton = ctaHref && ctaHref !== '#'
+    ? `<a href="${escapeHtml(ctaHref)}" class="btn btn-primary" style="border-radius: 999px; padding: 13px 26px">${escapeHtml(data.cta_label)}</a>`
+    : '';
 
   const body = `<section style="max-width: 1320px; margin: 0 auto; padding: 40px 48px 0">
     <span class="tag tag-accent-2" style="border-radius: 999px">${escapeHtml(data.eyebrow)}</span>
@@ -389,7 +354,7 @@ function renderNeighborhoods(data) {
 
   <section style="max-width: 1320px; margin: 72px auto 0; padding: 0 48px">
     <h2 style="font-family: var(--font-heading); font-size: 36px; margin: 0; letter-spacing: -0.01em">${escapeHtml(data.towns_heading)}</h2>
-    <p style="margin: 10px 0 0; font-size: 17px; max-width: 44em; color: color-mix(in srgb, var(--color-text) 70%, transparent); text-wrap: pretty">${inline(data.towns_intro)}</p>
+    ${townsIntroHtml}
     <div class="stub-grid" style="margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px">
       ${townCards}
     </div>
@@ -401,7 +366,7 @@ function renderNeighborhoods(data) {
         <h2 style="font-family: var(--font-heading); font-size: 32px; margin: 0; letter-spacing: -0.01em; color: var(--color-accent-2-900)">${escapeHtml(data.cta_heading)}</h2>
         <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55; color: var(--color-accent-2-900); text-wrap: pretty">${inline(data.cta_text)}</p>
       </div>
-      <a href="${escapeHtml(data.cta_link)}" class="btn btn-primary" style="border-radius: 999px; padding: 13px 26px">${escapeHtml(data.cta_label)}</a>
+      ${ctaButton}
     </div>
   </section>`;
 
@@ -587,7 +552,8 @@ function articleJsonLd(data, canonical, image) {
     publisher: {
       '@type': 'Organization',
       name: 'Riviera Arrival',
-      url: `${SITE}/`
+      url: `${SITE}/`,
+      logo: organizationLogo()
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -622,8 +588,7 @@ function renderGuide(slug) {
     const heroAlt = text(data.hero_image_alt || data.hero_heading);
     const image = absoluteAsset(data.hero_image);
     const robots = hidden ? `<meta name="robots" content="noindex, follow">\n` : '';
-    const extraHead = `${robots}<meta property="og:image" content="${escapeHtml(image)}">
-${jsonLdScript(articleJsonLd(data, canonical, image))}
+    const extraHead = `${jsonLdScript(articleJsonLd(data, canonical, image))}
 ${jsonLdScript(faqJsonLd(data.faqs))}
 ${crumbScript([
   { name: 'Home', item: `${SITE}/` },
@@ -695,6 +660,9 @@ ${crumbScript([
       canonical,
       extraStyles: GUIDE_STYLES,
       extraHead,
+      ogImage: image,
+      ogType: 'article',
+      robots,
       body
     });
   };

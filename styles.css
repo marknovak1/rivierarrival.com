@@ -125,10 +125,17 @@ figcaption {
   border-radius: var(--radius-md);
 }
 .btn svg { display: block; }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.btn-primary { background: var(--color-accent); color: var(--color-bg); }
-.btn-primary:hover { background: var(--color-accent-600); }
-.btn-primary:active { background: var(--color-accent-700); }
+.btn:disabled,
+.btn-primary:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+  color: #3a342c;
+  background: #e4d9c8;
+  border-color: #6f6558;
+}
+.btn-primary { background: #95552b; color: var(--color-bg); }
+.btn-primary:hover { background: var(--color-accent-700); }
+.btn-primary:active { background: var(--color-accent-800); }
 .btn-secondary { border-color: var(--color-divider); }
 .btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
 .btn-secondary:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
@@ -303,18 +310,165 @@ textarea.input { min-height: 90px; resize: vertical; }
   width: 44px; height: 44px; padding: 0;
   background: transparent; border: 1px solid var(--color-divider);
   border-radius: 999px; color: var(--color-text); cursor: pointer;
+  flex-shrink: 0;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 20px 48px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.brand-lockup {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--color-text);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.brand-name {
+  font-family: var(--font-heading);
+  font-size: 23px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.brand-mark {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  display: inline-block;
+  flex: 0 0 auto;
+}
+.site-nav {
+  display: flex;
+  gap: 28px;
+  margin-left: 18px;
+  font-size: 15px;
+}
+.site-header-tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.site-footer {
+  max-width: 1320px;
+  margin: 80px auto 0;
+  padding: 56px 48px 64px;
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+  border-top: 1px solid var(--color-divider);
+}
+.site-footer-brand {
+  flex: 0 0 auto;
+  width: min(280px, 100%);
+}
+.site-footer-name {
+  font-family: var(--font-heading);
+  font-size: 21px;
+}
+.footer-muted,
+.footer-copy,
+.footer-label {
+  color: color-mix(in srgb, var(--color-text) 68%, var(--color-bg));
+}
+.footer-muted,
+.footer-copy {
+  font-size: 14px;
+  margin-top: 8px;
+}
+.site-footer-cols {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  font-size: 15px;
+}
+.site-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.footer-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.guide-body a,
+a.source-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.grid-hero > * {
+  min-width: 0;
+}
+.hero-arch {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 520px;
+  aspect-ratio: 6 / 5;
+}
+.hero-arch-photo {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px 999px 240px 240px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.hero-arch-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hero-inset {
+  position: absolute;
+  bottom: -18px;
+  left: -34px;
+  width: 172px;
+  height: 172px;
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 6px solid var(--color-bg);
+}
+.hero-inset img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* responsive: stack the big two-column grids on narrow screens */
 @media (max-width: 900px) {
   .grid-hero, .grid-2, .grid-list { grid-template-columns: 1fr !important; }
+  /* The homepage arch sets both a 520px height and a 6/5 ratio. In a
+     single-column grid that pair resolves to a 624px minimum width and
+     overflows the viewport. Drop the fixed height so the column width
+     wins and the ratio only reserves the height. */
+  .hero-arch { height: auto !important; }
   .essentials-grid { grid-template-columns: repeat(2, 1fr) !important; }
   h1 { font-size: 44px !important; }
 
-  /* the 5-link nav + EN/FR toggle no longer fits inline below ~900px —
-     collapse it into a hamburger-triggered dropdown instead of letting it
-     overflow the header row (it has no flex-wrap) */
+  /* the header nav no longer fits inline below ~900px — collapse it into a
+     hamburger-triggered dropdown instead of letting it overflow the row */
   header { position: relative; }
+  .site-header { padding: 16px 20px; gap: 12px; }
   .nav-toggle { display: inline-flex; }
   header nav {
     display: none !important;
@@ -353,5 +507,12 @@ textarea.input { min-height: 90px; resize: vertical; }
      flex direction turns that basis into a height, not a width, so it no
      longer forces horizontal overflow */
   .grid-list { flex-direction: column; }
-  .site-footer { flex-direction: column !important; gap: 32px !important; }
+  .site-footer { flex-direction: column !important; gap: 32px !important; padding: 40px 20px 48px !important; }
+  .site-footer-brand { width: 100%; }
+  .site-footer-cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 800px) {
+  .site-footer { flex-direction: column; gap: 32px; padding: 40px 20px 48px; }
+  .site-footer-brand { width: 100%; }
+  .site-footer-cols { grid-template-columns: 1fr; }
 }

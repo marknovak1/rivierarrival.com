@@ -1,15 +1,25 @@
-import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { marked } from 'marked';
 import { CATEGORIES, RELATED_BY_CATEGORY, canonicalCategory } from './journal-categories.mjs';
-import { DEFAULT_COVER, escapeHtml, siteHeader, siteFooter, siteScripts, layout } from './site-layout.mjs';
+import { applySharedChrome } from './apply-shared-chrome.mjs';
+import {
+  DEFAULT_COVER,
+  DEFAULT_OG_IMAGE,
+  SITE as LAYOUT_SITE,
+  documentTitle,
+  escapeHtml,
+  layout,
+  organizationLogo
+} from './site-layout.mjs';
 
 export { DEFAULT_COVER };
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SITE = 'https://www.rivieraarrival.com';
+const SITE = LAYOUT_SITE;
 const CONTENT_DIR = join(ROOT, 'content', 'journal');
 const OUT_DIR = join(ROOT, 'journal');
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
@@ -36,6 +46,7 @@ function formatLong(iso) {
   return new Intl.DateTimeFormat('en-GB', {
     day: 'numeric',
     month: 'long',
+    year: 'numeric',
     timeZone: 'UTC'
   }).format(parseDate(iso));
 }
@@ -44,8 +55,13 @@ function formatShort(iso) {
   return new Intl.DateTimeFormat('en-GB', {
     day: 'numeric',
     month: 'short',
+    year: 'numeric',
     timeZone: 'UTC'
   }).format(parseDate(iso));
+}
+
+function stripLeadingH1(html) {
+  return String(html || '').replace(/^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i, '');
 }
 
 function slugify(title) {
@@ -96,13 +112,15 @@ export function loadPosts(dir = CONTENT_DIR) {
       continue;
     }
     const description = String(data.description || '').trim();
-    const html = marked.parse(parsed.content || '') || '';
+    const html = stripLeadingH1(marked.parse(parsed.content || '') || '');
+    const noindex = data.noindex === true || data.noindex === 'true';
     posts.push({
       slug,
       title: String(data.title || slug),
       date,
       updated: toIsoDate(data.updated) || date,
       draft,
+      noindex,
       category: canonicalCategory(data.category),
       description,
       image: publicImage(data.image || DEFAULT_COVER),
@@ -133,7 +151,8 @@ export function jsonLd(post) {
     publisher: {
       '@type': 'Organization',
       name: 'Riviera Arrival',
-      url: `${SITE}/`
+      url: `${SITE}/`,
+      logo: organizationLogo()
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -156,10 +175,9 @@ function relatedBlock(post) {
 
 export function renderPost(post) {
   const canonical = `${SITE}/journal/${post.slug}.html`;
-  const extraHead = `<meta property="og:image" content="${escapeHtml(absoluteUrl(post.image))}">
-<script type="application/ld+json">${JSON.stringify(jsonLd(post))}</script>`;
-  const body = `${siteHeader('journal')}
-  <article style="max-width: 820px; margin: 0 auto; padding: 34px 48px 0">
+  const extraHead = `<script type="application/ld+json">${JSON.stringify(jsonLd(post))}</script>`;
+  const robots = post.noindex ? '<meta name="robots" content="noindex, follow">\n' : '';
+  const body = `  <article style="max-width: 820px; margin: 0 auto; padding: 34px 48px 0">
     <p style="margin: 0 0 8px"><a href="/journal/" style="font-size: 14px">← All posts</a></p>
     <div style="display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--color-accent-700)">
       <time datetime="${escapeHtml(post.date)}">${escapeHtml(formatLong(post.date))}</time>
@@ -175,10 +193,13 @@ export function renderPost(post) {
     ${relatedBlock(post)}
   </article>`;
   return layout({
-    title: `${post.title} — Riviera Arrival`,
+    title: documentTitle(post.title),
     description: post.description,
     canonical,
     extraHead,
+    image: absoluteUrl(post.image),
+    type: 'article',
+    robots,
     crumbs: [
       { name: 'Home', item: `${SITE}/` },
       { name: "Nathalie's journal", item: `${SITE}/journal/` },
@@ -246,19 +267,18 @@ export function renderHub(posts) {
     ? `<h2 style="font-family: var(--font-heading); font-size: 28px; margin: 56px 0 18px">The archive</h2>
       <div style="display: flex; flex-direction: column">
         ${archive.map((post, i) => `<a class="archive-row journal-card" data-category="${escapeHtml(post.category)}" href="/journal/${escapeHtml(post.slug)}.html" style="display: flex; align-items: baseline; gap: 20px; padding: 16px 4px; border-top: 1px solid var(--color-divider); ${i === archive.length - 1 ? 'border-bottom: 1px solid var(--color-divider); ' : ''}color: var(--color-text)">
-          <time datetime="${escapeHtml(post.date)}" style="flex: 0 0 96px; font-size: 14px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">${escapeHtml(formatShort(post.date))}</time>
+          <time datetime="${escapeHtml(post.date)}" style="flex: 0 0 8.5rem; font-size: 14px; color: color-mix(in srgb, var(--color-text) 68%, var(--color-bg))">${escapeHtml(formatShort(post.date))}</time>
           <span style="font-family: var(--font-heading); font-size: 19px; flex: 1">${escapeHtml(post.title)}</span>
           <span style="font-size: 13px; color: var(--color-accent-700)">${escapeHtml(post.category)}</span>
         </a>`).join('\n        ')}
       </div>`
     : '';
 
-  const listHeading = grid.length ? '<h2 style="font-family: var(--font-heading); font-size: 28px; margin: 0 0 24px">Earlier this week</h2>' : '';
-
-  const body = `${siteHeader('journal')}
-  <section class="grid-2" style="max-width: 1320px; margin: 0 auto; padding: 34px 48px 0; display: grid; grid-template-columns: 1fr 320px; gap: 56px; align-items: center">
+  // Newsletter signup stays hidden until a real newsletter service exists.
+  // The old block asked for an email and a Subscribe button that did not send anywhere.
+  const body = `  <section class="grid-2" style="max-width: 1320px; margin: 0 auto; padding: 34px 48px 0; display: grid; grid-template-columns: 1fr 320px; gap: 56px; align-items: center">
     <div>
-      <span class="tag tag-accent-2" style="border-radius: 999px">Daily, from Nice</span>
+      <span class="tag tag-accent-2" style="border-radius: 999px">From Nice</span>
       <h1 style="font-family: var(--font-heading); font-size: 58px; line-height: 1.04; letter-spacing: -0.02em; margin: 18px 0 0">Nathalie's journal</h1>
       <p style="font-size: 19px; line-height: 1.55; max-width: 34em; margin: 20px 0 0; color: color-mix(in srgb, var(--color-text) 78%, transparent); text-wrap: pretty">One street, one shop, one small administrative victory at a time. If it took me a morning to figure out, it's written down here so it takes you ten minutes.</p>
       ${filterButtons(posts)}
@@ -270,19 +290,10 @@ export function renderHub(posts) {
   ${featuredHtml}
   <section class="grid-list" style="max-width: 1320px; margin: 0 auto; padding: 76px 48px 0; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start">
     <div style="min-width: 0">
-      ${listHeading}
       ${gridHtml}
       ${archiveHtml}
     </div>
     <aside style="display: flex; flex-direction: column; gap: 26px; position: sticky; top: 24px">
-      <div style="background: var(--color-accent-2-200); border-radius: var(--radius-lg); padding: 26px">
-        <div style="font-family: var(--font-heading); font-size: 21px; color: var(--color-accent-2-900)">One email, every Sunday</div>
-        <p style="font-size: 15px; line-height: 1.55; margin: 10px 0 16px; color: var(--color-accent-2-900)">The week's posts and anything newcomers asked me about.</p>
-        <div class="field">
-          <input class="input" style="border-radius: 999px; min-height: 42px" placeholder="you@example.com">
-        </div>
-        <button type="button" class="btn btn-primary btn-block" style="border-radius: 999px; min-height: 42px">Subscribe</button>
-      </div>
       <div style="background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow-sm)">
         <div style="font-family: var(--font-heading); font-size: 19px">Ask Nathalie</div>
         <p style="font-size: 15px; line-height: 1.55; margin: 10px 0 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Stuck on something in your first weeks? Send it over — the answer usually becomes a post.</p>
@@ -313,9 +324,10 @@ export function renderHub(posts) {
 </script>`;
 
   return layout({
-    title: "Nathalie's journal — Riviera Arrival",
+    title: documentTitle("Nathalie's journal from Nice"),
     description: "One street, one shop, one small administrative victory at a time — a daily journal from Nice for newcomers to the Côte d'Azur.",
     canonical,
+    image: `${SITE}/images/nathalie.jpg`,
     crumbs: [
       { name: 'Home', item: `${SITE}/` },
       { name: "Nathalie's journal", item: canonical }
@@ -333,30 +345,86 @@ function writeRobots() {
   writeFileSync(join(ROOT, 'robots.txt'), body);
 }
 
+function lastmodFor(filePath) {
+  try {
+    const out = execFileSync('git', ['log', '-1', '--format=%cs', '--', filePath], {
+      cwd: ROOT,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(out)) return out;
+  } catch {
+    // Untracked or unavailable git history falls back to the file mtime.
+  }
+  try {
+    const target = existsSync(filePath) ? filePath : ROOT;
+    return statSync(target).mtime.toISOString().slice(0, 10);
+  } catch {
+    return new Date().toISOString().slice(0, 10);
+  }
+}
+
+function sourceForLoc(loc) {
+  if (loc === `${SITE}/`) return join(ROOT, 'index.html');
+  if (loc === `${SITE}/journal/`) return join(ROOT, 'content', 'journal');
+  const post = loc.match(/\/journal\/([^/]+)\.html$/);
+  if (post) {
+    const md = join(ROOT, 'content', 'journal', `${post[1]}.md`);
+    return existsSync(md) ? md : join(OUT_DIR, `${post[1]}.html`);
+  }
+  const name = loc.slice(`${SITE}/`.length);
+  const md = join(ROOT, 'content', 'pages', name.replace(/\.html$/, '.md'));
+  if (existsSync(md)) return md;
+  return join(ROOT, name);
+}
+
 function writeSitemap(posts) {
   const rootPages = readdirSync(ROOT)
     .filter((name) => name.endsWith('.html') && !name.startsWith('_') && name !== 'journal.html')
     .sort();
 
-  const urls = [`${SITE}/`];
+  const locs = [`${SITE}/`];
   for (const page of rootPages) {
     if (page === 'index.html') continue;
     const html = readFileSync(join(ROOT, page), 'utf8');
     if (isNoindexPage(html)) continue;
-    urls.push(`${SITE}/${page}`);
+    locs.push(`${SITE}/${page}`);
   }
-  urls.push(`${SITE}/journal/`);
+  locs.push(`${SITE}/journal/`);
   for (const post of posts) {
-    urls.push(`${SITE}/journal/${post.slug}.html`);
+    if (post.noindex) continue;
+    locs.push(`${SITE}/journal/${post.slug}.html`);
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((loc) => `  <url>\n    <loc>${loc}</loc>\n  </url>`).join('\n')}
+${locs.map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmodFor(sourceForLoc(loc))}</lastmod>\n  </url>`).join('\n')}
 </urlset>
 `;
   writeFileSync(join(ROOT, 'sitemap.xml'), xml);
   writeRobots();
+}
+
+function writeNotFound() {
+  const canonical = `${SITE}/404.html`;
+  const html = layout({
+    title: documentTitle('Page not found, French Riviera'),
+    description: "That page isn't on Riviera Arrival. Go back to the home page.",
+    canonical,
+    active: '',
+    image: DEFAULT_OG_IMAGE,
+    robots: '<meta name="robots" content="noindex, follow">\n',
+    crumbs: [
+      { name: 'Home', item: `${SITE}/` },
+      { name: 'Page not found', item: canonical }
+    ],
+    body: `  <section style="max-width: 720px; margin: 0 auto; padding: 72px 48px 0">
+    <h1 style="font-family: var(--font-heading); font-size: 60px; line-height: 1.03; letter-spacing: -0.02em; margin: 0">Page not found</h1>
+    <p style="font-size: 19px; line-height: 1.55; margin: 22px 0 0; color: color-mix(in srgb, var(--color-text) 78%, transparent)">That page isn't on Riviera Arrival.</p>
+    <a href="/" class="btn btn-primary" style="border-radius: 999px; margin-top: 28px; padding: 13px 26px">Back to the home page</a>
+  </section>`
+  });
+  writeFileSync(join(ROOT, '404.html'), html);
 }
 
 function resetOutDir() {
@@ -368,7 +436,7 @@ function assemblePublic() {
   const dest = join(ROOT, 'public');
   rmSync(dest, { recursive: true, force: true });
   mkdirSync(dest, { recursive: true });
-  const copy = ['styles.css', 'robots.txt', 'sitemap.xml', 'images', 'admin', 'journal'];
+  const copy = ['styles.css', 'robots.txt', 'sitemap.xml', 'favicon.svg', 'favicon.ico', 'images', 'admin', 'journal'];
   for (const name of readdirSync(ROOT)) {
     if (name.endsWith('.html')) copy.push(name);
   }
@@ -385,6 +453,8 @@ function main() {
   for (const post of published) {
     writeFileSync(join(OUT_DIR, `${post.slug}.html`), renderPost(post));
   }
+  writeNotFound();
+  applySharedChrome(ROOT);
   writeSitemap(published);
   assemblePublic();
 
