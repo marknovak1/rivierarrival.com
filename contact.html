@@ -57,12 +57,13 @@
   </section>
 
   <section style="max-width: 1320px; margin: 44px auto 0; padding: 0 48px">
-    <!-- TODO: destination not decided. Do not post this form anywhere. -->
-    <form method="post" action="#" onsubmit="return false" style="background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 34px; max-width: 600px; box-shadow: var(--shadow-md); display: flex; flex-direction: column; gap: 14px">
-      <div class="field"><label for="c-name">Your name</label><input id="c-name" name="name" class="input" style="border-radius: 999px; min-height: 42px" placeholder="Your name" required></div>
-      <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" class="input" style="border-radius: 999px; min-height: 42px" placeholder="you@example.com" required></div>
-      <div class="field"><label for="c-msg">Your question</label><textarea id="c-msg" name="message" class="input" style="border-radius: var(--radius-md); min-height: 110px" placeholder="What are you trying to figure out?" required></textarea></div>
+    <form id="contact-form" method="post" action="/api/contact" style="background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 34px; max-width: 600px; box-shadow: var(--shadow-md); display: flex; flex-direction: column; gap: 14px">
+      <div class="field"><label for="c-name">Your name</label><input id="c-name" name="name" class="input" style="border-radius: 999px; min-height: 42px" placeholder="Your name" autocomplete="name" maxlength="200" required></div>
+      <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" class="input" style="border-radius: 999px; min-height: 42px" placeholder="you@example.com" autocomplete="email" maxlength="254" required></div>
+      <div class="field"><label for="c-msg">Your question</label><textarea id="c-msg" name="message" class="input" style="border-radius: var(--radius-md); min-height: 110px" placeholder="What are you trying to figure out?" maxlength="5000" required></textarea></div>
+      <div class="form-honeypot" aria-hidden="true"><label for="c-website">Leave this field empty</label><input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       <button type="submit" class="btn btn-primary btn-block" style="border-radius: 999px; min-height: 44px">Send</button>
+      <p id="contact-status" class="form-status" role="status" aria-live="polite"></p>
     </form>
   </section>
 
@@ -106,6 +107,49 @@
         nav.classList.remove('nav-open');
         toggle.setAttribute('aria-expanded', 'false');
       });
+    });
+  })();
+</script>
+<script>
+  (function () {
+    var form = document.getElementById('contact-form');
+    var status = document.getElementById('contact-status');
+    if (!form || !status || !window.fetch) return;
+    var button = form.querySelector('button[type="submit"]');
+    function show(kind, text) {
+      status.className = 'form-status form-status-' + kind;
+      status.textContent = text;
+    }
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      if (button.disabled) return;
+      var data = {};
+      new FormData(form).forEach(function (value, key) { data[key] = value; });
+      button.disabled = true;
+      button.textContent = 'Sending…';
+      status.className = 'form-status';
+      status.textContent = '';
+      fetch(form.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(function (res) {
+          return res.json().catch(function () { return {}; }).then(function (body) {
+            if (!res.ok || !body.ok) throw new Error(body.error || 'Your message could not be sent. Please try again.');
+          });
+        })
+        .then(function () {
+          form.reset();
+          show('success', 'Thank you. Your question is on its way, and Nathalie will reply by email.');
+        })
+        .catch(function (err) {
+          show('error', err && err.message && err.message !== 'Failed to fetch' ? err.message : 'Your message could not be sent. Please check your connection and try again.');
+        })
+        .then(function () {
+          button.disabled = false;
+          button.textContent = 'Send';
+        });
     });
   })();
 </script>

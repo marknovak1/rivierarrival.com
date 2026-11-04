@@ -505,7 +505,12 @@ if (healthcare && !healthcare.includes('70%')) fail('Healthcare guide should sti
 const visas = read('guide-visas.html');
 if (visas && !visas.includes('€50') && !visas.includes('&euro;50')) fail('Visas guide should still mention the €50 student fee');
 const contact = read('contact.html');
-if (contact && !/<form\b[^>]*onsubmit="return false"/.test(contact)) fail('Contact form must not submit');
+if (contact && contact.includes('action="#"')) fail('Contact form must not use action="#"');
+if (contact && /onsubmit="return false"/.test(contact)) fail('Contact form must not block submission inline');
+if (contact && !/<form\b[^>]*action="\/api\/contact"/.test(contact)) fail('Contact form must post to /api/contact');
+if (contact && !/aria-live="polite"/.test(contact)) fail('Contact form needs an aria-live status region');
+if (contact && !/name="website"[^>]*tabindex="-1"/.test(contact)) fail('Contact form needs the honeypot field');
+if (!existsSync(join(ROOT, 'api', 'contact.js'))) fail('api/contact.js is missing');
 if (contact && !/type="email"/.test(contact)) fail('Contact email field needs type="email"');
 for (const name of ['name', 'email', 'message']) {
   if (contact && !contact.includes(`name="${name}"`)) fail(`Contact form is missing name="${name}"`);
@@ -513,7 +518,7 @@ for (const name of ['name', 'email', 'message']) {
     fail(`Contact field ${name} should be required`);
   }
 }
-if (contact && !contact.includes('TODO')) fail('Contact form needs a TODO comment');
+if (contact && contact.includes('TODO')) fail('Contact page still has a TODO');
 if (contact && /mailto:|tel:/.test(contact)) fail('Contact page must not add an email or phone link');
 if (!existsSync(join(ROOT, 'favicon.svg')) || !existsSync(join(ROOT, 'favicon.ico'))) {
   fail('favicon.svg and favicon.ico are required');

@@ -158,6 +158,13 @@ figcaption {
   border: 1px solid var(--color-divider); border-radius: var(--radius-md);
 }
 .input:hover { border-color: color-mix(in srgb, var(--color-text) 45%, transparent); }
+.form-status { margin: 0; font-size: 15px; line-height: 1.5; }
+.form-status:empty { display: none; }
+.form-status-success,
+.form-status-error { padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); border: 1px solid; }
+.form-status-success { color: var(--color-accent-2-800); background: var(--color-accent-2-100); border-color: var(--color-accent-2-400); }
+.form-status-error { color: var(--color-accent-800); background: var(--color-accent-100); border-color: var(--color-accent-400); }
+.form-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .input:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
 textarea.input { min-height: 90px; resize: vertical; }
 .radio { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; }
