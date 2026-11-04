@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "*.html"
+        ],
+        "createdAt": "2026-11-04T09:29:50.181Z",
+        "reason": "user confirmed: #f5ead8 is the site's sanctioned design-system background (STYLE.md)"
+      }
+    ]
+  }
+}
