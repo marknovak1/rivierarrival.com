@@ -486,13 +486,17 @@ if (hub && (/Subscribe/.test(hub) || hub.includes('Earlier this week') || hub.in
 }
 if (hub && !hub.includes('From Nice')) fail('Journal hub should say From Nice');
 if (hub && !hub.includes('28 August 2026')) fail('Journal dates should include the year');
-if (homepage && (homepage.includes('Take the neighborhood quiz') || homepage.includes('People &amp; events') || homepage.includes('People & events'))) {
+if (homepage && (homepage.includes('Take the neighborhood quiz') || homepage.includes('six questions') || homepage.includes('People &amp; events') || homepage.includes('People & events'))) {
   fail('Homepage still shows the quiz or People & events card');
 }
+if (homepage && /last spring/i.test(homepage)) fail('Homepage still uses a relative move date');
 if (homepage && !homepage.includes('From Nice')) fail('Homepage journal label should say From Nice');
 if (homepage && !homepage.includes('28 August 2026')) fail('Homepage journal dates should include the year');
-if (neighborhoods && (neighborhoods.includes('Take the quiz') || neighborhoods.includes('A guide to each will open from here'))) {
+if (neighborhoods && (neighborhoods.includes('Take the quiz') || neighborhoods.includes('six questions') || neighborhoods.includes('A guide to each will open from here'))) {
   fail('Neighborhoods still promises a quiz or per-town guides');
+}
+if (neighborhoods && /<a[^>]+href="[^"]*"[^>]*>\s*<div style="height: 130px/.test(neighborhoods)) {
+  fail('Neighborhood town cards should stay non-links');
 }
 const fareUrl = 'https://www.lignesdazur.com/titres-et-tarifs/quel-titre-pour-mon-deplacement/titres-au-voyage/';
 for (const page of ['index.html', 'settling-in.html', 'guide-transport.html']) {
@@ -501,20 +505,23 @@ for (const page of ['index.html', 'settling-in.html', 'guide-transport.html']) {
   if (html && !html.includes('€1.70') && !html.includes('&euro;1.70')) fail(`${page} should keep the €1.70 fare`);
 }
 const healthcare = read('guide-healthcare.html');
+const ameliConsultations = 'https://www.ameli.fr/assure/remboursements/rembourse/consultations-telemedecine/metropole';
 if (healthcare && !healthcare.includes('70%')) fail('Healthcare guide should still mention the 70% reimbursement');
+if (healthcare && !healthcare.includes(ameliConsultations)) fail('Healthcare 70% should link the Ameli consultations page');
+if (healthcare && !healthcare.includes('coordinated care pathway')) fail('Healthcare 70% should name the coordinated care pathway');
+if (healthcare && !healthcare.includes('médecin traitant')) fail('Healthcare 70% should require a declared médecin traitant');
 const visas = read('guide-visas.html');
-if (visas && !visas.includes('€50') && !visas.includes('&euro;50')) fail('Visas guide should still mention the €50 student fee');
-const contact = read('contact.html');
-if (contact && !/<form\b[^>]*onsubmit="return false"/.test(contact)) fail('Contact form must not submit');
-if (contact && !/type="email"/.test(contact)) fail('Contact email field needs type="email"');
-for (const name of ['name', 'email', 'message']) {
-  if (contact && !contact.includes(`name="${name}"`)) fail(`Contact form is missing name="${name}"`);
-  if (contact && !new RegExp(`name="${name}"[^>]*required|required[^>]*name="${name}"`).test(contact)) {
-    fail(`Contact field ${name} should be required`);
-  }
+const visaTaxUrl = 'https://www.service-public.gouv.fr/particuliers/vosdroits/F16162';
+if (visas && (visas.includes('€50') || visas.includes('&euro;50') || visas.includes('€300') || visas.includes('€100'))) {
+  fail('Visas guide must not hardcode the VLS-TS validation tax');
 }
-if (contact && !contact.includes('TODO')) fail('Contact form needs a TODO comment');
-if (contact && /mailto:|tel:/.test(contact)) fail('Contact page must not add an email or phone link');
+if (visas && !visas.includes(visaTaxUrl)) fail('Visas guide should link Service Public for the validation tax');
+if (visas && !/depends on your visa category/.test(visas)) fail('Visas guide should say the validation tax depends on the visa category');
+const contact = read('contact.html');
+if (contact && /<form\b/i.test(contact)) fail('Contact page must not show a form that cannot send');
+if (contact && !/not connected yet/i.test(contact)) fail('Contact page should say the form is not connected yet');
+if (contact && /mailto:|tel:/i.test(contact)) fail('Contact page must not add an email or phone link');
+if (contact && /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(contact)) fail('Contact page must not invent an email address');
 if (!existsSync(join(ROOT, 'favicon.svg')) || !existsSync(join(ROOT, 'favicon.ico'))) {
   fail('favicon.svg and favicon.ico are required');
 }
