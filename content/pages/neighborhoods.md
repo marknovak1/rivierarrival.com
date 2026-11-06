@@ -34,7 +34,7 @@ towns:
     image: images/town-market.jpg
     imageAlt: "A Provençal market"
 cta_heading: "Not sure yet?"
-cta_text: "Answer six questions and we'll point you somewhere to start looking."
-cta_label: "Take the quiz"
+cta_text: "The cards above are a place to start. Pick the town that matches how you want to live."
+cta_label: ""
 cta_link: "#"
 ---
